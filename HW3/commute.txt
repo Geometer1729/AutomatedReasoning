@@ -1,0 +1,5 @@
+forall x. forall y. !(nat(x) and nat(y)) or equal(add(succ(x),y),add(x,succ(y)))
+exists z. forall w. equal(add(z,y),y) and nat(z)
+forall n. !(nat(n)) or nat(succ(n))
+
+forall a. forall b. equal(add(a,b),add(b,a))

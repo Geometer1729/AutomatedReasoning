@@ -1,0 +1,9 @@
+Attached are Clause.hs and OR.hs;
+Clause.hs contains the parser and some types, OR.hs is where the heavy lifting gets done.
+Compile OR and run, then enter a formula like this:
+p,q,!r.
+s,t,!q.
+p,s.
+
+Entering a blank line ends the input. The periods are important.
+The program will output the saturated (possibly empty) set of clauses.

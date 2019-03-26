@@ -1,0 +1,9 @@
+Hi Chris!
+Formula.hs is a helper file used by both CNFBuild and FormReduce
+
+The syntax for the parser is fairly intuitive. Example formula:
+"p and q or (c -> !d)"
+
+Compile CNFBuild with GHC, then run it and type in a formula. It will spit out a list of clauses in CNF.
+
+Operate FormReduce similarly, but it computes SAT (and a truth assignment) or UNSAT using DPLL.
