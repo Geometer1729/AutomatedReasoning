@@ -24,11 +24,23 @@ type ID = Int
 --The Bool indicates whether or not the predicate is negated, the ID is the ID value, and the [Term] is the args
 data Predicate = P Bool ID [Term]
 
+instance Eq Predicate where
+  (==) = undefined
+
+instance Ord Predicate where
+  compare = undefined
+
 --Symbols represent functions and constants.
 --Constants are nullary functions.
 data Term = V ID
            |Symbol ID [Term]
-            deriving (Eq,Show)
+            deriving (Show)
+
+instance Eq Term where
+  (==) = undefined
+
+instance Ord Term where
+  compare = undefined
 
 --An `or` of a list of predicates
 type Clause = [Predicate]
