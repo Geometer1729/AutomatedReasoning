@@ -43,4 +43,4 @@ instance Ord Term where
   compare = undefined
 
 --An `or` of a list of predicates
-type Clause = [Predicate]
+type Clause = ([Predicate],[Predicate]) --resolvable terms other terms
