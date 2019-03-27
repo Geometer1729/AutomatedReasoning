@@ -60,6 +60,14 @@ test0 = do
         let ans = saturate (c1++c2)
         print ans
 
+testEvil :: IO ()
+testEvil = do
+  f1 <- readFormula "forall x. exists a. exists b. exists c. P(x,a) or P(c,b)"
+  f2 <- readFormula "forall x. exists a. exists b. exists c. P(x,b) or !P(c,b)"
+  f3 <- readFormula "forall x. exists a. exists b. exists c. !P(x,b) or P(c,a)"
+  f4 <- readFormula "forall x. exists a. exists b. exists c. !P(x,a) or !P(c,a)"
+  print $ saturate (concat . map process $ [f1,f2,f3,f4])
+
 proveIO :: [String] -> String -> IO Bool
 proveIO givens result = do
                     axioms <- mapM readFormula givens
@@ -80,13 +88,17 @@ readClauses = do
                         return (c++cs)
 
 main :: IO ()
-main = do
+main = testEvil
+
+  {-do
         print "Enter axioms line by line. Enter a blank line. Enter the goal clauses. Enter a blank line."
         axioms <- readClauses
         goals <- readClauses
         let negGoals = fmap map map N $ goals
         let proofs = [saturate $ ng:axioms | ng <- negGoals]
         print proofs
+    -}
+
 
 {-
 data Term = V String | Symbol String [Term] deriving (Eq,Show)
