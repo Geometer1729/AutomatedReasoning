@@ -22,6 +22,11 @@ isU :: Unifier -> Bool
 isU F = False
 isU _ = True
 
+instance Semigroup Unifier where
+  (<>) u1 F = F
+  (<>) F u2 = F
+  (<>) (U sub1) (U sub2) = U (sub1 ++ sub2)
+
 instance Monoid Unifier where
     mempty = U []
     mappend u1 F = F
