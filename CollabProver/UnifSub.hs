@@ -1,5 +1,5 @@
-{-# LANGUAGE FlexibleInstances #-}
-module Unif where
+{-# LANGUAGE FlexibleInstances , Rank2Types #-}
+module UnifSub where
 
 import Types
 import Control.Monad
@@ -50,6 +50,10 @@ instance Unifiable Predicate where
   unify (P lb li lts) (P rb ri rts) = (guard $ (lb == rb) && (li == ri)) *> unify lts rts -- implemented for completenes probably not usefull
   applySub sub (P b i ts) = P b i (applySub sub ts) -- apply over the terms
 
+instance Unifiable [Predicate] where
+  -- only implementing apply for convenience
+  applySub sub = map (applySub sub) 
+
 resolvePreds :: Predicate -> Predicate -> Unifier
 -- return the unifier required to resolve to predicates
 resolvePreds (P lb li lts) (P rb ri rts) = (guard $ (lb /= rb) && (li == ri)) *> unify lts rts
@@ -77,3 +81,34 @@ resolutions :: [Clause] -> [Clause] -> [Clause]
 -- all resolutions between clauses in two lists
 resolutions xs ys = concat [ resolve x y | x <- xs , y <- ys ]
 
+{-
+ - Subsumption
+ -}
+class Subsumable a where
+  subsumes :: a -> a -> Unifier
+
+instance Subsumable Term where
+  subsumes (V id) t = Just [(id,t)]
+  subsumes (Symbol li lts) (Symbol ri rts) = (guard $ li == ri) *> subsumes lts rts
+  subsumes (Symbol _ _) (V _) = Nothing
+
+instance Subsumable [Term] where
+  subsumes (lt:lts) (rt:rts) = do
+    subs <- subsumes lt rt
+    subs' <- on subsumes (applySubs subs) lts rts
+    return (subs ++ subs')
+
+instance Subsumable Predicate where
+  subsumes (P lb li lts) (P rb ri rts) = (guard $ (lb == rb) && (li == ri)) *> subsumes lts rts
+
+instance Subsumable [Predicate] where
+  subsumes ls rs = listToMaybe . catMaybes $ do -- list monad
+    (x,xs) <- getEntsWithRest ls
+    (y,ys) <- getEntsWithRest rs
+    return $ do -- maybe monad
+      subs <- subsumes x y
+      subs' <- on subsumes (applySubs subs) xs ys
+      return (subs ++ subs')
+
+instance Subsumable Clause where
+  subsumes (ls1,ls2) (rs1,rs2) = subsumes (ls1++ls2) (rs1++rs2)
