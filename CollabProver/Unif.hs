@@ -74,4 +74,6 @@ resolve lc rc = catMaybes $ do -- list monad
     return $ clauseArrange $ map (applySubs u) (ls ++ rs)
 
 resolutions :: [Clause] -> [Clause] -> [Clause]
+-- all resolutions between clauses in two lists
 resolutions xs ys = concat [ resolve x y | x <- xs , y <- ys ]
+
