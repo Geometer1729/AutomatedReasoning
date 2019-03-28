@@ -1,4 +1,5 @@
 module Types where
+import Data.List
 
 {-
  - PARSING LAND
@@ -44,3 +45,7 @@ instance Ord Term where
 
 --An `or` of a list of predicates
 type Clause = ([Predicate],[Predicate]) --resolvable terms other terms
+
+clauseArrange :: [Predicate] -> Clause
+clauseArrange xs = case group . sort $ xs of
+  (y:ys) -> (y,concat ys)
