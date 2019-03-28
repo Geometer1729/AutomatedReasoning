@@ -23,13 +23,8 @@ type ID = Int
 -}
 --Represents a logical claim about an object in the Herbrand universe
 --The Bool indicates whether or not the predicate is negated, the ID is the ID value, and the [Term] is the args
-data Predicate = P Bool ID [Term]
-
-instance Eq Predicate where
-  (==) = undefined
-
-instance Ord Predicate where
-  compare = undefined
+data Predicate = P Bool ID [Term] deriving(Eq,Ord)
+--deriving Eq and Ord do lexigraphic comparison by default, prefering negative clauses
 
 --Symbols represent functions and constants.
 --Constants are nullary functions.
@@ -38,10 +33,17 @@ data Term = V ID
             deriving (Show)
 
 instance Eq Term where
-  (==) = undefined
+  (V _) == _ = True
+  _ == (V _) = True
+  (Symbol li lts) == (Symbol ri rts) = li == ri && lts == rts
 
 instance Ord Term where
-  compare = undefined
+  compare (V _) _ = EQ
+  compare _ (V _) = EQ
+  compare (Symbol li lts) (Symbol ri rts) = case compare li ri of
+    LT -> LT
+    GT -> GT 
+    EQ -> compare lts rts
 
 --An `or` of a list of predicates
 type Clause = ([Predicate],[Predicate]) --resolvable terms other terms
