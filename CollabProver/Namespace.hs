@@ -8,7 +8,7 @@ data Namespace = Namespace {
 } deriving (Show)
 
 empty :: Namespace
-empty = Namespace { forward = Data.Map.empty, Namespace.reverse = Data.Map.empty }
+empty = Namespace Data.Map.empty Data.Map.empty
 
 insert :: Namespace -> String -> (Int, Namespace)
 insert ns k = let
@@ -18,7 +18,7 @@ insert ns k = let
         ) k $ forward ns
     ix = (forward ns) ! k
     reverse' = Data.Map.insert ix k $ Namespace.reverse ns
-    in (ix, ns { forward = forward', Namespace.reverse = reverse' })
+    in (ix, Namespace forward' reverse')
 
 unmap :: Namespace -> Int -> Maybe String
 unmap ns k = Data.Map.lookup k $ Namespace.reverse ns

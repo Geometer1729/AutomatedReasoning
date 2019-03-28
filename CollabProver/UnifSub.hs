@@ -40,7 +40,7 @@ instance Subable a => Subable [a] where
   applySub subs = map $ applySub subs
 
 instance Renamable a => Renamable [a] where
-  -- no subs are nesecary for the empty list
+  -- no subs are necessary for the empty list
   getSubs [] = return []
   getSubs (x:xs) = do
     -- get subs for first term
@@ -58,13 +58,13 @@ instance Nameable a => Nameable [a] where
  -}
 
 instance Subable Term where
-  -- if the variable is the one being substituted replace it else leave it
+  -- if the variable is the one being substituted, replace it; else leave it
   applySub (id,t) v@(V iv) = if id == iv then t else v
   -- apply the substitution to each argument
   applySub sub (Symbol ids ts) = Symbol ids (map (applySub sub) ts)
 
 instance Unifiable Term where
-  -- for a Variable and term substitute the variable to the term
+  -- for a Variable and term, substitute the variable to the term
   unify (V i) t     = Just [(i,t)] 
   unify t     (V i) = Just [(i,t)]
   -- if the functions have the same ID unify the arguments
@@ -83,7 +83,7 @@ instance Renamable Term where
     -- get the free ID and the handled IDs
     (fi,is) <- get
     if i `elem` is then
-      return [] -- return [] as no further subbs are nesecary
+      return [] -- return [] as no further subs are nesecary
     else do
     -- increment the free ID and append the variable's ID to the handled IDS
     put (fi + 1,i:is)
@@ -109,7 +109,7 @@ instance Unifiable [Term] where
     return (subs ++ subs') -- return all the substitutions
   unify _ _ = error "unify on a list of terms expects lists of the same length"
 
-instance Subsumable [Term] where -- Subsume each term in the right list with the coresponding term in the left list
+instance Subsumable [Term] where -- Subsume each term in the right list with the corresponding term in the left list
   -- If there are no terms subsumption happens with no unifier
   subsumes' [] [] = Just []
   subsumes' (lt:lts) (rt:rts) = do
@@ -117,7 +117,7 @@ instance Subsumable [Term] where -- Subsume each term in the right list with the
     subs <- subsumes' lt rt
     -- apply those substitutions and then subsume the remaining list of terms
     subs' <- on subsumes' (applySubs subs) lts rts
-    -- return all of the nesecary subsumptions
+    -- return all of the necessary subsumptions
     return (subs ++ subs')
   subsumes' _ _ = error "tried to subsume uneven lists of terms"
 
@@ -129,7 +129,7 @@ instance Subable Predicate where
   applySub sub (P b i ts) = P b i (applySub sub ts) -- apply over the terms
 
 instance Subsumable Predicate where
-  -- as long as the negation is the same and the function id is the same just subsume the arguments
+  -- as long as the negation is the same and the function id is the same, just subsume the arguments
   subsumes' (P lb li lts) (P rb ri rts) = (guard $ (lb == rb) && (li == ri)) *> subsumes' lts rts
 
 instance Renamable Predicate where
@@ -159,7 +159,7 @@ instance Subable Clause where
   applySub u (ls,rs) = (applySub u ls,applySub u rs)
 
 instance Subsumable Clause where 
-  -- concatenates the clause to a list of predicates and use the [Predicate instance
+  -- concatenates the clause to a list of predicates and use the [Predicate] instance
   subsumes' = on subsumes' (uncurry (++))
 
 instance Subable (Clause,a) where
@@ -205,7 +205,7 @@ resolve lc rc = catMaybes $ do -- list monad
   (l,ls) <- getLeftPairs lc 
   (r,rs) <- getLeftPairs rc 
   return $ do -- maybe monad
-    -- if the resolution is posible return a new clause with the other predicates
+    -- if the resolution is possible return a new clause with the other predicates
     u <- resolvePreds l r 
     return $ applySubs u (ls ++ rs)
 
@@ -223,10 +223,10 @@ subsumes l r = isJust $ subsumes' l r
 data History = Given ID | Derived ID History History
 
 data Layer = Layer {
-   procesedClauses   :: [(Clause,History)]
-  ,unprocesedClauses :: [(Clause,History)]
-  ,clauseFreeId :: ID -- requires all subsequent ids are free
-  ,varFreeId :: ID
+   processedClauses   :: [(Clause,History)]
+  ,unprocessedClauses :: [(Clause,History)]
+  ,nextFreeClauseID :: ID -- requires all subsequent ids are free
+  ,nextFreeVarID :: ID
   }
 
 
@@ -268,7 +268,7 @@ resolveHist (lc,lh) (rc,rh) = do
   return ncs
 
 stepLayer :: Layer -> Layer
--- move the unprocesed clauses to procesed and add the new clauses
+-- move the unprocesed clauses to processed and add the new clauses
 stepLayer (Layer pcs ucs cid tid) = Layer ocs ncs' cid' tid'
   where
     -- list of all pairs which need to be resolved
@@ -289,7 +289,7 @@ removeSubsumedBy :: (Subsumable a) => [a] -> [a] -> [a]
 removeSubsumedBy xs ys = [ x | x <- xs , not $ anySubsume ys x ]
 
 subsumption :: (Subsumable a) => [a] -> [a] -> ([a],[a])
--- assumes the left clauses have already been subsumed with eachother
+-- assumes the left clauses have already been subsumed with each other
 subsumption ls rs = (ls',rs'')
   where
     -- remove lefts subsumed by anything in rs
