@@ -145,6 +145,7 @@ instance Nameable Predicate where
  -}
 
 instance Subsumable [Predicate] where -- subsume some term in the right list with each term from the left list
+  subsumes' [] _ = Just []
   subsumes' (x:xs) rs = listToMaybe . catMaybes $ do -- list monad
     (y,ys) <- getEntsWithRest rs
     return $ do -- maybe monad
