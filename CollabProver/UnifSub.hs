@@ -51,7 +51,8 @@ instance Renamable a => Renamable [a] where
     return (subs ++ subs')
 
 instance Nameable a => Nameable [a] where
-  getFree = maximum . map getFree 
+  -- 0 ensure the list is non empty
+  getFree = maximum . (0:) . map getFree 
 
 {-
  - Term Instances
@@ -220,14 +221,17 @@ subsumes l r = isJust $ subsumes' l r
  - Processing
  -}
 
-data History = Given ID | Derived ID History History
+data History = Given ID | Derived ID History History deriving (Show)
 
 data Layer = Layer {
    processedClauses   :: [(Clause,History)]
   ,unprocessedClauses :: [(Clause,History)]
   ,nextFreeClauseID :: ID -- requires all subsequent ids are free
   ,nextFreeVarID :: ID
-  }
+  } 
+
+instance Show Layer where
+  show (Layer ps us _ _) = unlines $ "begin layer" : (map show ps) ++ ["\n"] ++ (map show us) ++ ["end layer"]
 
 
 rename :: (Renamable a) => a -> State ID a
