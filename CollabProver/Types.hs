@@ -26,16 +26,24 @@ type ID = Int
 data Predicate = P Bool ID [Term] deriving(Eq,Ord,Show)
 --deriving Eq and Ord do lexigraphic comparison by default, prefering negative clauses
 
+-- ID is the variable ID of the argument Term is the output in terms of the argument
+type Lambda = (ID,Term)
+
 --Symbols represent functions and constants.
 --Constants are nullary functions.
+--Schemes are fun
 data Term = V ID
            |Symbol ID [Term]
+           |Scheme [Lambda] Term
             deriving (Show)
+
 
 instance Eq Term where
   (V _) == _ = True
   _ == (V _) = True
   (Symbol li lts) == (Symbol ri rts) = li == ri && lts == rts
+  -- I can't think of a good way to compare Schemes
+  _ _ = True
 
 instance Ord Term where
   compare (V _) _ = EQ
@@ -44,6 +52,8 @@ instance Ord Term where
     LT -> LT
     GT -> GT 
     EQ -> compare lts rts
+  -- You would also need scheme order stuff here
+  compare _ _ = EQ
 
 --An `or` of a list of predicates
 type Clause = ([Predicate],[Predicate]) --resolvable terms other terms
