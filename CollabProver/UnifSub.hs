@@ -7,7 +7,7 @@ import Control.Monad.State
 import Data.Maybe
 import Data.Function
 
-type Sub = (ID,Term) -- the variable id and the term
+type Sub = Either (Term,Term) (Predicate,Predicate)-- the term to match and the new term
 type Unifier = [Sub] -- the list of unifiers each a list of substitutions 
 type MGUS = [Unifier] -- the list of most general unifiers
 
@@ -15,11 +15,12 @@ type MGUS = [Unifier] -- the list of most general unifiers
  - Classes
  -}
 
+
 class Subable a where -- substitutions can be applied
   applySub :: Sub -> a -> a
 
 class Subable a => Unifiable a where 
-  unify :: a -> a -> MGUS
+  unify :: a -> a -> State Unifier MGUS
 
 class Subable a => Subsumable a where
   subsumes' :: a -> a -> Unifier
@@ -86,6 +87,7 @@ instance Unifiable Term where
       stateUnify lt@(Scheme lls larg) rt@(Scheme rls ragr) = do
         -- list of term pairs and lambdas
         xs <- get
+        put [((lt,rt),
         if larg == lt &&  rarg == rt then 
           return $ Scheme [l] larg
         else do
