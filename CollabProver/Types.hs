@@ -26,8 +26,10 @@ type ID = Int
 data Predicate = P Bool ID [Term] deriving(Eq,Ord,Show)
 --deriving Eq and Ord do lexigraphic comparison by default, prefering negative clauses
 
--- ID is the variable ID of the argument Term is the output in terms of the argument
-type Lambda = (ID,Term)
+-- The first ID is the variable ID of the argument 
+-- Term is the output in terms of the argument
+-- The second ID is the ID of the exponent
+type Lambda = (ID,Term,ID)
 
 --Symbols represent functions and constants.
 --Constants are nullary functions.
@@ -43,7 +45,7 @@ instance Eq Term where
   _ == (V _) = True
   (Symbol li lts) == (Symbol ri rts) = li == ri && lts == rts
   -- I can't think of a good way to compare Schemes
-  _ _ = True
+  _ == _ = True
 
 instance Ord Term where
   compare (V _) _ = EQ

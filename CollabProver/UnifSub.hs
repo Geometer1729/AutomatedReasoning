@@ -8,7 +8,8 @@ import Data.Maybe
 import Data.Function
 
 type Sub = (ID,Term) -- the variable id and the term
-type Unifier = Maybe [Sub] -- the list of substitutions 
+type Unifier = [Sub] -- the list of unifiers each a list of substitutions 
+type MGUS = [Unifier] -- the list of most general unifiers
 
 {-
  - Classes
@@ -18,7 +19,7 @@ class Subable a where -- substitutions can be applied
   applySub :: Sub -> a -> a
 
 class Subable a => Unifiable a where 
-  unify :: a -> a -> Unifier
+  unify :: a -> a -> MGUS
 
 class Subable a => Subsumable a where
   subsumes' :: a -> a -> Unifier
@@ -55,6 +56,13 @@ instance Nameable a => Nameable [a] where
   getFree = maximum . (0:) . map getFree 
 
 {-
+ - Lambda Instances
+ -}
+
+instance Subable Lambda where
+  applySub sub (i,t) = (i,applySub sub t)
+
+{-
  - Term Instances
  -}
 
@@ -63,13 +71,30 @@ instance Subable Term where
   applySub (id,t) v@(V iv) = if id == iv then t else v
   -- apply the substitution to each argument
   applySub sub (Symbol ids ts) = Symbol ids (map (applySub sub) ts)
+  applySub sub (Scheme ls arg) = Scheme (applySub sub ls) (applySub sub arg)
 
 instance Unifiable Term where
-  -- for a Variable and term, substitute the variable to the term
-  unify (V i) t     = Just [(i,t)] 
-  unify t     (V i) = Just [(i,t)]
-  -- if the functions have the same ID unify the arguments
-  unify (Symbol li lts) (Symbol ri rts) = (guard (li == ri)) *> unify lts rts
+  unify lt rt = runState (stateUnify lt rt) []
+    where
+      -- the state is a list of pairs of attempted terms and the lambda of changes since they were attempted
+      stateUnify :: Term -> Term -> State [((Term,Term),Lambda,ID)] MGUS
+      -- for a Variable and term, substitute the variable to the term
+      stateUnify (V i) t     = return [[(i,t)]]
+      stateUnify t     (V i) = return [[(i,t)]]
+      -- if the functions have the same ID unify the arguments
+      stateUnify (Symbol li lts) (Symbol ri rts) = return $ (guard (li == ri)) *> unify lts rts
+      stateUnify lt@(Scheme lls larg) rt@(Scheme rls ragr) = do
+        -- list of term pairs and lambdas
+        xs <- get
+        if larg == lt &&  rarg == rt then 
+          return $ Scheme [l] larg
+        else do
+          
+          return 
+      stateUnify (Scheme ls arg) t = return $ (unify arg t) ++ concat [ unify (appLambda l arg) t | l <- ls ]
+
+appLambda :: Lambda -> Term -> Term
+appLambda (i,lt) t = appSub (i,t) lt
 
 instance Subsumable Term where
   -- Variable subsumes any term by unifiying to if
