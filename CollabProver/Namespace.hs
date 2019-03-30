@@ -16,7 +16,7 @@ insert ns k = let
             Just x -> Just x
             Nothing -> Just $ size $ forward ns
         ) k $ forward ns
-    ix = (forward ns) ! k
+    ix = forward' ! k
     reverse' = Data.Map.insert ix k $ Namespace.reverse ns
     in (ix, Namespace forward' reverse')
 
