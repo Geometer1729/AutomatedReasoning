@@ -5,8 +5,8 @@ module Types where
  -}
 data Formula = Var String
               |Function String [Formula]
-              |And [Formula]
-              |Or [Formula]
+              |And Formula Formula
+              |Or Formula Formula
               |Not Formula
               |Implies Formula Formula
               |Quantified Quantifier Formula
