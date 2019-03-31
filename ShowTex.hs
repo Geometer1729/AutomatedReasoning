@@ -51,7 +51,9 @@ instance NsShow Layer where
   nsshow (Layer ps us _ _) ns = unlines $ "begin layer\nProcesed" : (map chShow ps) ++ ["Unprocessed"] ++ (map chShow us) ++ ["end layer"]
     where
       chShow :: (Clause,History) -> String
-      chShow (c,h) = unlines [nsshow c ns,show h]
+      --Uncoment to show history
+      --chShow (c,h) = unlines [nsshow c ns,show h]
+      chShow (c,h) = nsshow c ns
 
 instance {-# OVERLAPPING #-} Show Clause where
   show ([],[]) = "|"
