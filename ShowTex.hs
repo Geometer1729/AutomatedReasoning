@@ -20,7 +20,7 @@ idshow id ns tt = case unmap ns id of
     SymbolNilary -> "a" ++ show id
     SymbolVariable -> "X" ++ show id
 
-instance {-# OVERLAPPING #-} NsShow Clause where
+instance NsShow Clause where
   nsshow ([],[]) ns = "|"
   nsshow (l,[]) ns = (nsshow l ns) ++ " |"
   nsshow ([],r) ns = "| " ++ nsshow r ns
@@ -42,7 +42,7 @@ instance NsShow Term where
   nsshow (Symbol id []) ns = idshow id ns SymbolNilary
   nsshow (Symbol id tl) ns = (idshow id ns SymbolFunction) ++ "(" ++ (nsshow tl ns) ++ ")"
 
-instance {-# OVERLAPPING #-} NsShow [Term] where
+instance NsShow [Term] where
   nsshow [t] ns = nsshow t ns
   nsshow (t:l) ns = (nsshow t ns) ++ ", " ++ nsshow l ns
   nsshow [] ns = error "Attempt to nsshow an empty list of terms"

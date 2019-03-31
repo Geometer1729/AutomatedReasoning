@@ -44,6 +44,9 @@ instance Ord Term where
     GT -> GT 
     EQ -> compare lts rts
 
+-- This part is localized to the dnf branch; it is a disjunctive clause.
+type DjClause = ([Predicate],[Predicate])  -- Negative terms and positive terms
+
 --An `or` of a list of predicates
 type Clause = ([Predicate],[Predicate]) --resolvable terms other terms
 
