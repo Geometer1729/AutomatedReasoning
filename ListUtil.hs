@@ -12,7 +12,7 @@ getEntsWithRest (x:xs) = (x,xs) : [ (a,x:b) | (a,b) <- getEntsWithRest xs ]
 selfPairs :: [a] -> [(a,a)]
 -- returns every pair of one element from the list and a element not before it from the list
 selfPairs [] = []
-selfPairs (x:xs) = (x:x) : [ (x,x') | x' <- xs ] ++ (selfPairs xs)
+selfPairs (x:xs) = (x,x) : [ (x,x') | x' <- xs ] ++ (selfPairs xs)
 
 resTargets :: [a] -> [a] -> [(a,a)]
 -- returns every pair of one element from the left and one from the right
