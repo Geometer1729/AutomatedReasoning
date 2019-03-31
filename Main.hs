@@ -3,17 +3,17 @@ import Types
 import Parser
 import ShowTex
 import Processing
+import Dnf
 
 main = do
   args <- getArgs 
   cons <- readFile . head $ args 
-  let n = read $ args !! 1
-  putStrLn . handle n . init $ cons
+  putStrLn . handle . init $ cons
 
-handle :: Int -> String -> String
-handle n s = unlines . map (flip nsshow ns) $ ls
+handle :: String -> String
+handle s = (unlines $ map (flip nsshow ns) pss) ++ (unlines $ map (flip nsshow ns) djs) ++ "\n" ++ (unlines $ map (flip nsshow ns) sdjs)
   where
     (pss,ns) = process s 
-    l = initialize pss :: Layer
-    ls = take n $ iterate stepLayer l :: [Layer]
+    djs = dnfify pss
+    sdjs = reduce djs
 
