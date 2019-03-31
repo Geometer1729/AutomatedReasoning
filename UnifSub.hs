@@ -9,17 +9,9 @@ import Data.Function
 
 type Sub = (ID,Term) -- the variable id and the term
 type Unifier = Maybe [Sub] -- the list of substitutions 
-type Schema = [(Predicate,Predicate)] -- The template predicate and the output predicate
-
-learnSchema :: [Clause] -> [Schema]
-learnSchema cs = catMaybes $ do
-  (l,r) <- cs
-  return $ case l ++ r of
-      [P False n1 ts1 ,P True n2 ts2] -> if n1 == n2 && unifies ts1 ts2 
-        then Just [ (P True n1 ts1 , P True n2 ts2) ]
-        else Nothing
-      _ -> Nothing
-    
+type Schema = ([(Predicate,Predicate)],[Predicate]) 
+-- The left list is a list of patterns which implie other paterns 
+-- The right list is the list of arguments over which the left list can be itterated
 
 {-
  - Classes
@@ -154,6 +146,9 @@ instance Renamable Predicate where
 
 instance Nameable Predicate where
   getFree (P _ _ ts) = getFree ts
+
+instance Unifiable Predicate where
+  unify (P lb ln lts) (P rb rn rts) = guard (lb == rb && ln == rn) *> unify lts rts
 
 {-
  - [Predicate] Instance 
@@ -328,4 +323,23 @@ initialize :: [[Predicate]] -> Layer
 initialize pss = Layer [] ([ (c,Given n) | (c,n) <- (zip cs [0..])]) (length pss) (getFree pss)
   where
     cs = map clauseArrange pss
+
+{-
+ - Schemea
+ -}
+
+learnSchema :: [Clause] -> [Schema]
+learnSchema cs = catMaybes $ do
+  (l,r) <- cs
+  return $ case l ++ r of
+      [P False n1 ts1 ,P True n2 ts2] -> if n1 == n2 && unifies ts1 ts2 
+        then Just ( [ (P True n1 ts1 , P True n2 ts2) ] , getApplicables (P True n1 ts1) cs )
+        else Nothing
+      _ -> Nothing
+
+getApplicables :: Predicate -> [Clause] -> [Predicate]
+getApplicables p cs = filter (unifies p) singletons
+  where 
+    singletons = [ head l | (l,r) <- cs , length l == 1 , null r , unifies p (head l)]
+    
 
