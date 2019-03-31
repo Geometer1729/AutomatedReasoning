@@ -9,6 +9,17 @@ import Data.Function
 
 type Sub = (ID,Term) -- the variable id and the term
 type Unifier = Maybe [Sub] -- the list of substitutions 
+type Schema = [(Predicate,Predicate)] -- The template predicate and the output predicate
+
+learnSchema :: [Clause] -> [Schema]
+learnSchema cs = catMaybes $ do
+  (l,r) <- cs
+  return $ case l ++ r of
+      [P False n1 ts1 ,P True n2 ts2] -> if n1 == n2 && unifies ts1 ts2 
+        then Just [ (P True n1 ts1 , P True n2 ts2) ]
+        else Nothing
+      _ -> Nothing
+    
 
 {-
  - Classes
@@ -19,9 +30,13 @@ class Subable a where -- substitutions can be applied
 
 class Subable a => Unifiable a where 
   unify :: a -> a -> Unifier
+  unifies :: a -> a -> Bool
+  unifies x y = isJust $ unify x y
 
 class Subable a => Subsumable a where
   subsumes' :: a -> a -> Unifier
+  subsumes :: a -> a -> Bool
+  subsumes l r = isJust $ subsumes' l r
 
 class Subable a => Renamable a where -- Can be renamed
   -- the ID is the free Id 
@@ -211,18 +226,18 @@ resolve lc rc = catMaybes $ do -- list monad
     u <- resolvePreds l r 
     return $ applySubs u (ls ++ rs)
 
-{-
- -Subsumption
- -}
-
-subsumes :: (Subsumable a) => a -> a -> Bool
-subsumes l r = isJust $ subsumes' l r
 
 {-
  - Processing
  -}
 
-data History = Given ID | Derived ID History History deriving (Show)
+data History = Given ID | Derived ID History History 
+
+instance Show History where
+  show (Given n) = "G " ++ show n
+  show (Derived n h1 h2) = "D " ++ (show n) ++ "\n" ++  (indent . show $ h1) ++ "\n" ++  (indent . show $ h2)
+    where
+      indent = init . unlines . map ("  " ++) . lines
 
 data Layer = Layer {
    processedClauses   :: [(Clause,History)]
@@ -232,7 +247,10 @@ data Layer = Layer {
   } 
 
 instance Show Layer where
-  show (Layer ps us _ _) = unlines $ "begin layer" : (map show ps) ++ ["\n"] ++ (map show us) ++ ["end layer"]
+  show (Layer ps us _ _) = unlines $ "begin layer\nProcesed" : (map chShow ps) ++ ["Unprocessed"] ++ (map chShow us) ++ ["end layer"]
+    where
+      chShow :: (Clause,History) -> String
+      chShow (c,h) = unlines [show c,show h]
 
 
 rename :: (Renamable a) => a -> State ID a

@@ -7,3 +7,4 @@ test: test.hs prover
 clean:
 	rm -f *.hi *.o
 	rm -f test
+	rm -f Main
