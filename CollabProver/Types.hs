@@ -23,14 +23,13 @@ type ID = Int
 -}
 --Represents a logical claim about an object in the Herbrand universe
 --The Bool indicates whether or not the predicate is negated, the ID is the ID value, and the [Term] is the args
-data Predicate = P Bool ID [Term] deriving(Eq,Ord,Show)
+data Predicate = P Bool ID [Term] deriving(Eq,Ord)
 --deriving Eq and Ord do lexigraphic comparison by default, prefering negative clauses
 
 --Symbols represent functions and constants.
 --Constants are nullary functions.
 data Term = V ID
            |Symbol ID [Term]
-            deriving (Show)
 
 instance Eq Term where
   (V _) == _ = True

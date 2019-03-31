@@ -1,5 +1,6 @@
 import UnifSub 
 import Types
+import ShowTex
 
 cnf :: [[Predicate]]
 cnf =  [ 
@@ -11,4 +12,4 @@ initial = initialize cnf
 
 ls = iterate stepLayer initial
 
-main = sequence . map print . take 5  $ ls
+main = sequence . map (putStrLn . show) . take 5  $ ls
