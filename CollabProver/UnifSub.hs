@@ -253,6 +253,12 @@ instance Show Layer where
       chShow :: (Clause,History) -> String
       chShow (c,h) = unlines [show c,show h]
 
+instance NsShow Layer where
+  nsshow (Layer ps us _ _) ns = unlines $ "begin layer\nProcesed" : (map chShow ps) ++ ["Unprocessed"] ++ (map chShow us) ++ ["end layer"]
+    where
+      chShow :: (Clause,History) -> String
+      chShow (c,h) = unlines [nsshow c ns,show h]
+
 
 rename :: (Renamable a) => a -> State ID a
 -- the State ID is the free ID 
