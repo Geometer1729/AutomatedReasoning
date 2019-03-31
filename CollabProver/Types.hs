@@ -63,3 +63,4 @@ type Clause = ([Predicate],[Predicate]) --resolvable terms other terms
 clauseArrange :: [Predicate] -> Clause
 clauseArrange xs = case group . sort $ xs of
   (y:ys) -> (y,concat ys)
+  [] -> ([],[])
