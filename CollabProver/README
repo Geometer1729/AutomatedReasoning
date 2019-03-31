@@ -1,1 +1,50 @@
 This is the prover that we are all working together to write as our project for the class. We intent to include some features to prevent infinite loops in certain cases.
+
+The original plan was to use schema which contained a list of lambda functions 
+  ie. [(\x -> f(x)),(\x -> g(x))] to represent the set of terms obtainale by applying any finite sequence of them 
+
+The example which makes this seem futile is:
+
+P(f(a,a))
+~P(f(x,y)) | P(f(g(x),h(y)))
+
+This requires at minimum a theorey of integers
+a varient of this:
+
+P(f(a,a))
+~P(f(x,y)) | P(f(g(x),h(y)))
+~P(f(x,y)) | P(f(g(x),i(y)))
+
+It seems clear from this that a complex theorey of relationships between the varios schema is nesecary
+
+The current plan is to use predicate level schema 
+
+ie. P(x) -> P(f x)
+
+This allows schematizing 
+
+P(f(a,a))
+~P(f(x,y)) | P(f(g(x),h(y)))
+~P(f(x,y)) | P(f(g(x),i(y)))
+
+as follows
+
+[ P(f(x,y)) -> P(f(g(x),h(y))) , P(f(x,y)) -> P(f(g(x),h(x))) ] P(f(a,a))
+
+The following things need to be implemented
+
+* Learning schema
+  We plan to learn schema from clauses of the form ~a | b
+
+* Joinging schema
+  when two clauses are schema of the same argument they should be subsumed by a new clause which joins their list
+
+* Normal operations of schema
+
+* Resolution
+
+* Unification
+
+* Subsumption
+
+(I don't really know markdown so someone feel free to make this better)
