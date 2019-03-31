@@ -2,6 +2,7 @@ import System.Environment
 import Types
 import Parser
 import UnifSub
+import ShowTex
 
 main = do
   args <- getArgs 
@@ -10,9 +11,9 @@ main = do
   putStrLn . handle n . init $ cons
 
 handle :: Int -> String -> String
-handle n s = unlines . map show $ ls
+handle n s = unlines . map (flip nsshow ns) $ ls
   where
-    (pss,_) = process s 
+    (pss,ns) = process s 
     l = initialize pss :: Layer
     ls = take n $ iterate stepLayer l :: [Layer]
 
