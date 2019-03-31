@@ -1,8 +1,8 @@
 import System.Environment
 import Types
 import Parser
-import UnifSub
 import ShowTex
+import Processing
 
 main = do
   args <- getArgs 

@@ -51,3 +51,18 @@ clauseArrange :: [Predicate] -> Clause
 clauseArrange xs = case group . sort $ xs of
   (y:ys) -> (y,concat ys)
   [] -> ([],[])
+
+data History = Given ID | Derived ID History History 
+
+data Layer = Layer {
+   processedClauses   :: [(Clause,History)]
+  ,unprocessedClauses :: [(Clause,History)]
+  ,nextFreeClauseID :: ID -- requires all subsequent ids are free
+  ,nextFreeVarID :: ID
+  } 
+
+type Sub = (ID,Term) -- the variable id and the term
+type Unifier = Maybe [Sub] -- the list of substitutions 
+type Schema = ([(Predicate,Predicate)],[Predicate]) 
+-- The left list is a list of patterns which implie other paterns 
+-- The right list is the list of arguments over which the left list can be itterated

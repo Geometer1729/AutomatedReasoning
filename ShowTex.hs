@@ -47,7 +47,11 @@ instance {-# OVERLAPPING #-} NsShow [Term] where
   nsshow (t:l) ns = (nsshow t ns) ++ ", " ++ nsshow l ns
   nsshow [] ns = error "Attempt to nsshow an empty list of terms"
 
-
+instance NsShow Layer where
+  nsshow (Layer ps us _ _) ns = unlines $ "begin layer\nProcesed" : (map chShow ps) ++ ["Unprocessed"] ++ (map chShow us) ++ ["end layer"]
+    where
+      chShow :: (Clause,History) -> String
+      chShow (c,h) = unlines [nsshow c ns,show h]
 
 instance {-# OVERLAPPING #-} Show Clause where
   show ([],[]) = "|"
@@ -75,6 +79,18 @@ instance {-# OVERLAPPING #-} Show [Term] where
   show [t] = show t
   show (t:l) = show t ++ ", " ++ show l
   show [] = error "Attempt to show an empty list of terms"
+
+instance Show History where
+  show (Given n) = "G " ++ show n
+  show (Derived n h1 h2) = "D " ++ (show n) ++ "\n" ++  (indent . show $ h1) ++ "\n" ++  (indent . show $ h2)
+    where
+      indent = init . unlines . map ("  " ++) . lines
+
+instance Show Layer where
+  show (Layer ps us _ _) = unlines $ "begin layer\nProcesed" : (map chShow ps) ++ ["Unprocessed"] ++ (map chShow us) ++ ["end layer"]
+    where
+      chShow :: (Clause,History) -> String
+      chShow (c,h) = unlines [show c,show h]
 
   -- TODO
 --instance TexShow Layer where
