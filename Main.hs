@@ -17,5 +17,3 @@ handle n s = unlines . map (flip nsshow ns) $ ls
     l = initialize pss :: Layer
     ls = take n $ iterate stepLayer l :: [Layer]
 
-
-
