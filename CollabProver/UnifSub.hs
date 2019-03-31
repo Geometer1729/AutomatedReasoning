@@ -2,6 +2,7 @@
 module UnifSub where
 
 import Types
+import ShowTex
 import Control.Monad
 import Control.Monad.State
 import Data.Maybe
