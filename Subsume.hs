@@ -10,7 +10,7 @@ import Control.Monad
 
 class Subable a => Subsumable a where
   subsumes' :: a -> a -> Unifier
-  subsumes :: a -> a -> Bool
+  subsumes  :: a -> a -> Bool
   subsumes l r = isJust $ subsumes' l r
 
 instance Subsumable Term where

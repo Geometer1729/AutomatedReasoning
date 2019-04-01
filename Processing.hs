@@ -1,6 +1,8 @@
 {-# LANGUAGE FlexibleInstances #-}
 module Processing where
 
+import Data.Bits
+import ASubsume 
 import Types
 import ShowTex
 import Control.Monad
@@ -13,7 +15,6 @@ import Unif
 import Renameable
 import Nameable
 import ListUtil
-
 
 {-
  - Resolution
@@ -47,9 +48,20 @@ resolveHist (lc,lh) (rc,rh) = do
   put (cid + (length predicateLists),tid')
   return ncs
 
+schemaSubsumption :: [Schema] -> [(Clause,History)] -> [(Clause,History)]
+schemaSubsumption ss cs = [ (c,h) | (c,h) <- cs , not . or $ [ asubsumes s c| s <- ss ] ]
+
+updateSchema :: Layer -> Layer
+updateSchema (Layer pcs ucs ss cid tid) = Layer  pcs' ucs' ss' cid tid
+  where
+    ss' = learnSchema (pcs ++ ucs ++ bases)
+    bases = map (\x -> ([x],[])) . map snd $ ss -- get bases of current schema
+    pcs' = schemaSubsumption ss' pcs
+    ucs' = schemaSubsumption ss' ucs 
+
 stepLayer :: Layer -> Layer
 -- move the unprocesed clauses to processed and add the new clauses
-stepLayer (Layer pcs ucs cid tid) = Layer ocs ncs' cid' tid'
+stepLayer (Layer pcs ucs ss cid tid) = Layer ocs ncs' ss cid' tid'
   where
     -- list of all pairs which need to be resolved
     targs = resTargets pcs ucs
@@ -59,6 +71,7 @@ stepLayer (Layer pcs ucs cid tid) = Layer ocs ncs' cid' tid'
     -- concatenated down to just a list of clauses
     ncs = concat ncss
     (ocs,ncs') = subsumption (pcs ++ ucs) ncs
+    
 
 anySubsume :: (Subsumable a) => [a] -> a -> Bool
 -- checks if the second argument is subsumed by any of the things in the list
@@ -81,8 +94,9 @@ subsumption ls rs = (ls',rs'')
 
 initialize :: [[Predicate]] -> Layer
 -- no clauses have been processed all are new and all are given
+-- No schema are assumed
 -- The clause namespace is used up to the length of the given list
-initialize pss = Layer [] ([ (c,Given n) | (c,n) <- (zip cs [0..])]) (length pss) (getFree pss)
+initialize pss = Layer [] ([ (c,Given n) | (c,n) <- (zip cs [0..])]) [] (length pss) (getFree pss)
   where
     cs = map clauseArrange pss
 
@@ -91,17 +105,27 @@ initialize pss = Layer [] ([ (c,Given n) | (c,n) <- (zip cs [0..])]) (length pss
  -}
 
 learnSchema :: [Clause] -> [Schema]
-learnSchema cs = catMaybes $ do
+learnSchema cs = applicable (getImplications cs) (getSingletons cs)
+
+getImplications :: [Clause] -> [Implication]
+getImplications cs = concat $ do
   (l,r) <- cs
   return $ case l ++ r of
-      [P False n1 ts1 ,P True n2 ts2] -> if n1 == n2 && unifies ts1 ts2 
-        then Just ( [ (P True n1 ts1 , P True n2 ts2) ] , getApplicables (P True n1 ts1) cs )
-        else Nothing
-      _ -> Nothing
+      [a,b] -> (scheme a b ++ scheme b a)
+      _ -> []
 
-getApplicables :: Predicate -> [Clause] -> [Predicate]
-getApplicables p cs = filter (unifies p) singletons
-  where 
-    singletons = [ head l | (l,r) <- cs , length l == 1 , null r , unifies p (head l)]
+scheme :: Predicate -> Predicate -> [(Predicate,Predicate)]
+scheme l@(P lb ln lts) r@(P rb rn rts)
+  -- If the names are the same
+  -- and the booleans disagree
+  -- and the left terms subsume the right terms
+  | (ln == rn) && (lb /= rb) && (subsumes lts rts) = [(l , P lb rn rts)]
+  | otherwise = []
     
+applicable :: [Implication] -> [Predicate] -> [Schema]
+applicable is ps = [ ([i | i@(l,r) <- is , subsumes l p],p) | p <- ps ]
+  where 
+
+getSingletons :: [Clause] -> [Predicate]
+getSingletons cs = [ head l | (l,r) <- cs , length l == 1 , null r]
 

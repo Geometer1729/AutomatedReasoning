@@ -57,12 +57,16 @@ data History = Given ID | Derived ID History History
 data Layer = Layer {
    processedClauses   :: [(Clause,History)]
   ,unprocessedClauses :: [(Clause,History)]
+  ,schemes :: [Schema]
   ,nextFreeClauseID :: ID -- requires all subsequent ids are free
   ,nextFreeVarID :: ID
   } 
 
 type Sub = (ID,Term) -- the variable id and the term
 type Unifier = Maybe [Sub] -- the list of substitutions 
-type Schema = ([(Predicate,Predicate)],[Predicate]) 
+type Implication = (Predicate,Predicate)
+type Schema = ([Implication],Predicate) 
+
+
 -- The left list is a list of patterns which implie other paterns 
 -- The right list is the list of arguments over which the left list can be itterated

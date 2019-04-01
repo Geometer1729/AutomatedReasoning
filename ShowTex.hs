@@ -48,7 +48,7 @@ instance {-# OVERLAPPING #-} NsShow [Term] where
   nsshow [] ns = error "Attempt to nsshow an empty list of terms"
 
 instance NsShow Layer where
-  nsshow (Layer ps us _ _) ns = unlines $ "begin layer\nProcesed" : (map chShow ps) ++ ["Unprocessed"] ++ (map chShow us) ++ ["end layer"]
+  nsshow (Layer ps us _ _ _) ns = unlines $ "begin layer\nProcesed" : (map chShow ps) ++ ["Unprocessed"] ++ (map chShow us) ++ ["end layer"]
     where
       chShow :: (Clause,History) -> String
       --Uncoment to show history
@@ -89,7 +89,7 @@ instance Show History where
       indent = init . unlines . map ("  " ++) . lines
 
 instance Show Layer where
-  show (Layer ps us _ _) = unlines $ "begin layer\nProcesed" : (map chShow ps) ++ ["Unprocessed"] ++ (map chShow us) ++ ["end layer"]
+  show (Layer ps us _ _ _) = unlines $ "begin layer\nProcesed" : (map chShow ps) ++ ["Unprocessed"] ++ (map chShow us) ++ ["end layer"]
     where
       chShow :: (Clause,History) -> String
       chShow (c,h) = unlines [show c,show h]
