@@ -1,52 +1,84 @@
-This is the prover that we are all working together to write as our project for the class. We intent to include some features to prevent infinite loops in certain cases.
+The current plan is Clause level Schematization
 
-The original plan was to use schema which contained a list of lambda functions 
-  ie. [(\x -> f(x)),(\x -> g(x))] to represent the set of terms obtainale by applying any finite sequence of them 
+When a Clause history has a cycle ie. 
 
-The example which makes this seem futile is:
+D 7
+  G 1
+  D 6
+    G 2
+    D 5
+      G 1
+      D 4
+        G 2
+        G 0
 
-P(f(a,a))
-~P(f(x,y)) | P(f(g(x),h(y)))
+The cycle has a base (G 0) and a chain [ G 1 , G 2 ] and a result (D 5) 
+D 5 because it is the result of one application
 
-This requires at minimum a theorey of integers
-a varient of this:
+Or when ever a clause is resolved proceed twice with each clause as a base and the other clause as the sole element of a length one chain.
 
-P(f(a,a))
-~P(f(x,y)) | P(f(g(x),h(y)))
-~P(f(x,y)) | P(f(g(x),i(y)))
+Attempt to find the most specific clause which subsumes both the base and the result ie.
+P(a) or P(b) , P(f(a)) or P(b)
 
-It seems clear from this that a complex theorey of relationships between the varios schema is nesecary
+Should produce P(x) or P(b)
 
-The current plan is to use predicate level schema 
+This should proceed like unification but when two clauses are not unifiable replace them with a variable
 
-ie. P(x) -> P(f x)
+Next the MSMS (Most Specific Mutually Subsumptive clause) should then be resolved against each clause in the chain in order.
+This should return a list of all possible resolution outcomes
+  of this list the following criteria should be filtered before implications are formed
+    clauses must be subsumed by the base 
+      ones which are not subsumed by the base would not be in danger of looping 
+    clauses must produce at least one predicate which can be larger than the base
+      if the clause predicts strictly smaller literals than there is not danger of looping 
+    It must be possible for the output to not be a tautology
+      if it only produces tautologies then the implication isn't necessary
+Clauses with these properties should be turned into implications stored as the two clauses
 
-This allows schematizing 
+Once an implications are derived
+  for each clause create a list of all the implications where the base subsumes the clause
 
-P(f(a,a))
-~P(f(x,y)) | P(f(g(x),h(y)))
-~P(f(x,y)) | P(f(g(x),i(y)))
+A scheme is a list of implications and a clause
 
-as follows
+Once the schemes are created ordered resolution must proceed with each scheme doing everything that the infinite set of clauses would do.
 
-[ P(f(x,y)) -> P(f(g(x),h(y))) , P(f(x,y)) -> P(f(g(x),h(x))) ] P(f(a,a))
+Subsumption
+  Scheme -> Clause
+    a scheme subsumes a clause if it contains any clauses which subsume that clause
+      To do this:
+          for any conclusion of an implication which subsume the target
+            apply the unifier of that Subsumption to the base of the hypothesis of the implication and treat this as the new target
+            when doing this maintain a state of the list of previous targets on each recursive call and fail to find a target if it is in this list
+            this should prevent some infinite loops without causing unnecessary failure
+  Scheme -> Scheme
+    a scheme subsumes a scheme if all clauses derived by the right scheme are subsumed by a clause derived by the left scheme
+    To do this:
+      This is equivalent to the right base clause being subsumed by the left scheme
+      so this step can be skipped as long as the schemes are rebuilt every step
 
-The following things need to be implemented
+    
 
-* Learning schema
-  We plan to learn schema from clauses of the form ~a | b
+Resolution
+  Schemes must be resolved against all clauses and schemes
+  Scheme -> Clause
+    To resolve a scheme against a clause it is necessary to create a list of clauses and schemes containing every clause which could be derived by resolving any clause in the scheme with the clause. 
+      To do this:
+        For each conclusion of an implication which unifies with the target
+          apply the unifier to the hypothesis of the implication and treat this as the new target
+          similarly to subsumption this should be done with state of a  list of previous targets and fail any recurring targets
+        Attempt to unify 
+  Scheme -> Scheme
+    To resolve a scheme against a scheme it is necessary to create a list of clauses and schemes containing every clause which could be derived by resolving any clause in one scheme with a clause in the other.
+    To do this:
+      I'm not sure
 
-* Joinging schema
-  when two clauses are schema of the same argument they should be subsumed by a new clause which joins their list
+Consistency checking
+  A scheme can't contain the empty clause unless it's argument was the empty clause
+  so it is sufficient to check clauses and not schemes for containing the empty clause
+  
+Tautology Removal
+  tautology removal is not necessary for correctness so it is sufficient to only remove tautologies from clauses 
+    However if an implication always produces a tautology it can be removed 
 
-* Normal operations of schema
-
-* Resolution
-
-* Unification
-
-* Subsumption
-
-(I don't really know markdown so someone feel free to make this better)
-
-Eventually we should escelate to multi predicate -> multi predicate implication schemes
+  
+  
