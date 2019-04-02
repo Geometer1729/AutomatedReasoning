@@ -78,8 +78,9 @@ Resolution
               the state is the previously encountered problems and the order in which implications have been applied 
               once you encounter a problem you've seen before just compose the implications
           find a generating base of resolutions
-            I don't know how to do this
-            maybe knuth bendix
+            To do this unify each base of one schema with the other 
+             This works because the hypothosis of each implication subsumes the conclusion so if there is a faliure to unify nothing derived by it will unify either
+             If there is a succesfull unification then the search can stop because any further unificatins would be absorbed by the implications
 
 Consistency checking
   A scheme can't contain the empty clause unless it's argument was the empty clause
