@@ -70,7 +70,16 @@ Resolution
   Scheme -> Scheme
     To resolve a scheme against a scheme it is necessary to create a list of clauses and schemes containing every clause which could be derived by resolving any clause in one scheme with a clause in the other.
     To do this:
-      I'm not sure
+      For each pair of conclusions (one left one right)
+        attempt to resolve them
+        if they resolve
+          find a generating list of equivalent paths of implications between the two schema
+            do this by a recursive stateful chase
+              the state is the previously encountered problems and the order in which implications have been applied 
+              once you encounter a problem you've seen before just compose the implications
+          find a generating base of resolutions
+            I don't know how to do this
+            maybe knuth bendix
 
 Consistency checking
   A scheme can't contain the empty clause unless it's argument was the empty clause
