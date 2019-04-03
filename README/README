@@ -1,46 +1,52 @@
 The current plan is Clause level Schematization
 
-When a Clause history has a cycle ie. 
+A high level explenation of the algorithim folows
 
-D 7
-  G 1
-  D 6
-    G 2
-    D 5
+Learning Implications
+  When a Clause history has a cycle ie. 
+
+    D 7
       G 1
-      D 4
+      D 6
         G 2
-        G 0
+        D 5
+          G 1
+          D 4
+            G 2
+            G 0
 
-The cycle has a base (G 0) and a chain [ G 1 , G 2 ] and a result (D 5) 
-D 5 because it is the result of one application
+    The cycle has a base (G 0) and a chain [ G 1 , G 2 ] and a result (D 5) 
+    D 5 because it is the result of one application
 
-Or when ever a clause is resolved proceed twice with each clause as a base and the other clause as the sole element of a length one chain.
+  Or when ever a clause is resolved proceed twice with each clause as a base and the other clause as the sole element of a length one chain.
 
-Attempt to find the most specific clause which subsumes both the base and the result ie.
-P(a) or P(b) , P(f(a)) or P(b)
+  Attempt to find the most specific clause which subsumes both the base and the result ie.
+    P(a) or P(b) , P(f(a)) or P(b)
 
-Should produce P(x) or P(b)
+    Should produce [ P(x) or P(b) , P(x) or P(y) ]
+      The first by matching the predicate in order the second by matching them swaped
 
-This should proceed like unification but when two clauses are not unifiable replace them with a variable
+  This should proceed like unification but when two terms are not unifiable replace them with a variable, if unification fails at the predicate level fail entirely
+    there may be multiple ways to pair off the predicates however so it is nesecary to return a list.
 
-Next the MSMS (Most Specific Mutually Subsumptive clause) should then be resolved against each clause in the chain in order.
-This should return a list of all possible resolution outcomes
-  of this list the following criteria should be filtered before implications are formed
-    clauses must be subsumed by the base 
-      ones which are not subsumed by the base would not be in danger of looping 
-    clauses must produce at least one predicate which can be larger than the base
-      if the clause predicts strictly smaller literals than there is not danger of looping 
-    It must be possible for the output to not be a tautology
-      if it only produces tautologies then the implication isn't necessary
-Clauses with these properties should be turned into implications stored as the two clauses
+  Next the MSMS (Most Specific Mutually Subsumptive clause) should then be resolved against each clause in the chain in order.
+  This should return a list of all possible resolution outcomes
+    of this list the following criteria should be filtered before implications are formed
+      clauses must be subsumed by the base 
+        ones which are not subsumed by the base would not be in danger of looping 
+      clauses must produce at least one predicate which can be larger than the base
+        if the clause predicts strictly smaller literals than there is not danger of looping 
+      It must be possible for the output to not be a tautology
+        if it only produces tautologies then the implication isn't necessary
+  Clauses with these properties should be turned into implications stored as the two clauses
 
-Once an implications are derived
+Creating Schemes from Implications
   for each clause create a list of all the implications where the base subsumes the clause
+  these are the schemes
+  each scheme is a list of implications and a clause
 
-A scheme is a list of implications and a clause
-
-Once the schemes are created ordered resolution must proceed with each scheme doing everything that the infinite set of clauses would do.
+Handleing Schemes
+  Once the schemes are created ordered resolution must proceed with each scheme doing everything that the infinite set of clauses would do.
 
 Subsumption
   Scheme -> Clause
@@ -55,8 +61,6 @@ Subsumption
     To do this:
       This is equivalent to the right base clause being subsumed by the left scheme
       so this step can be skipped as long as the schemes are rebuilt every step
-
-    
 
 Resolution
   Schemes must be resolved against all clauses and schemes
@@ -90,5 +94,3 @@ Tautology Removal
   tautology removal is not necessary for correctness so it is sufficient to only remove tautologies from clauses 
     However if an implication always produces a tautology it can be removed 
 
-  
-  

@@ -45,10 +45,11 @@ instance Ord Term where
     EQ -> compare lts rts
 
 --An `or` of a list of predicates
-type Clause = ([Predicate],[Predicate]) --resolvable terms other terms
+type Clause = [Predicate]
+type SplitClause = ([Predicate],[Predicate]) --resolvable terms other terms
 
-clauseArrange :: [Predicate] -> Clause
-clauseArrange xs = case group . sort $ xs of
+splitClause :: [Predicate] -> Clause
+splitClause xs = case group . sort $ xs of
   (y:ys) -> (y,concat ys)
   [] -> ([],[])
 
@@ -63,10 +64,9 @@ data Layer = Layer {
   } 
 
 type Sub = (ID,Term) -- the variable id and the term
-type Unifier = Maybe [Sub] -- the list of substitutions 
-type Implication = (Predicate,Predicate)
-type Schema = ([Implication],Predicate) 
-
+type Unifier = [Sub] -- the list of substitutions 
+type Implication = (Clause,Clause) -- A clause and a clause it implies
+type Scheme = ([Implication],Clause) -- the list of applicable implications and the base clause
 
 -- The left list is a list of patterns which implie other paterns 
 -- The right list is the list of arguments over which the left list can be itterated

@@ -1,0 +1,77 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Automated Reasoning}
+\author{Brian Kuhns}
+\date{April 2019}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+  Someone better at writing do this part
+
+\section{Algorithm}
+
+The algorithm is an extension of ordered resolution,
+which attempts to find finite representations of infinite clause families,
+and proceed with ordered resolution on these families.
+
+\subsection{Anatomy of a Scheme}
+
+A scheme contains two parts, a list of implications and a base.
+The list of implications is stored as a list of pairs of clauses,
+signifying that the left clause implies the right clause, hereafter the hypothesis and the conclusion.
+The base is a clause.
+
+An implication is syntactically valid if the hypothesis subsumes the conclusion.
+A scheme is syntactically valid if each implication is valid and
+the hypothesis of each implication subsumes the base.
+
+A scheme is said to contain a clause iff it can be derived by applying some finite sequence of the 
+implications to the base clause.
+
+\subsection{Learning Implications}
+
+Learning candidates is done in two phases: finding candidates and constructing implications from them.
+ 
+\subsubsection{Candidates}
+
+A candidate is a start clause, a chain of clauses, and an end clause:
+where the start clause can be, resolved with the clauses in the chain in sequence to produce the end clause.
+
+The important property to have is that,
+if the clause can be resolved through the chain infinitely a candidate will be examined.
+To ensure the first any time a chain appears twice in the history of a clause
+consider the clause before the first appearance of the chain and the chain as a candidate.
+In order to learn simple implications more quickly you can also form two candidates after each resolution,
+consisting of each as a base and the other as a single clause chain.
+
+\subsubsection{Implications}
+
+When given a candidate the important property to ensure is that if it can be resolved indefinitely,
+then a scheme which subsumes all of these clauses is derived.
+
+In order to ensure this, take the start clause and create all of its resolutions with the chain.
+Find a complete set of mutually Subsumptive clauses.
+Resolve that clause with the clauses in the chain.
+For each clause you get through that resolution create a new implication from the MGMSC to the resolved clause.
+
+This implication must be valid as by assuming the hypothesis the conclusion was derived within the problem.
+This implication will be put in a scheme with the start clause as the base because its hypothesis (the MGMSC) subsumes the start clause.
+This implication will subsume the chain of resolutions because when the implication is applied to the base,
+  it will produce the end clause.
+
+The complete set of mutually subsumptive clauses of two clauses must have the following properties
+\begin{itemize}
+  \item Each element must subsume both clauses
+  \item Some element must subsume any clause which subsumes both clauses
+\end{itemize}
+
+In order to find the  find
+
+
+
+\end{document}
