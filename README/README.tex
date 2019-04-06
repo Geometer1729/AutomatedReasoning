@@ -11,7 +11,7 @@
 
 \section{Introduction}
 
-  Someone better at writing do this part
+  Someone better at writing do this part.
 
 \section{Algorithm}
 
@@ -21,58 +21,89 @@ and proceed with ordered resolution on these families.
 
 \subsection{Anatomy of a Scheme}
 
-A scheme contains two parts, a list of implications and a base.
-The list of implications is stored as a list of pairs of clauses,
-signifying that the left clause implies the right clause, hereafter the hypothesis and the conclusion.
-The base is a clause.
+A scheme has 2 parts:
+a list of implications and a list of base clauses.
 
-An implication is syntactically valid if the hypothesis subsumes the conclusion.
+Each implication is a list of clauses and a clause.
+Signifying that the and of all of left clauses implies the right clause,
+hereafter the hypotheses and the conclusion.
+
+An implication is syntactically valid if each hypothesis subsumes the conclusion.
 A scheme is syntactically valid if each implication is valid and
-the hypothesis of each implication subsumes the base.
+each hypothesis of each implication subsumes each base clause.
+
+These properties are important because they ensure that any implication can be applied to any set of clauses in the scheme.
+Without these properties resolution and subsumption become much more complex, and may be undecidable.
 
 A scheme is said to contain a clause iff it can be derived by applying some finite sequence of the 
-implications to the base clause.
+implications to the base clauses.
 
 \subsection{Learning Implications}
 
-Learning candidates is done in two phases: finding candidates and constructing implications from them.
+Learning implications is done in two phases: finding candidates and constructing implications from them.
  
 \subsubsection{Candidates}
 
-A candidate is a start clause, a chain of clauses, and an end clause:
-where the start clause can be, resolved with the clauses in the chain in sequence to produce the end clause.
+A candidate is a tree whose nodes are clauses and whose leafs are clauses.
+Suppositions are also clauses but they are handled differently to construct implications.
+  
+A candidate should be derived whenever the history of a clause contains a subtree which subsumes it.
+A clause-tree subsumes another clause-tree
+  if the graphs are isomorphic the and each node subsumes the corresponding node in the other tree.
+
+Two clauses are of the same form if some clause subsumes both of them.
 
 The important property to have is that,
-if the clause can be resolved through the chain infinitely a candidate will be examined.
-To ensure the first any time a chain appears twice in the history of a clause
-consider the clause before the first appearance of the chain and the chain as a candidate.
-In order to learn simple implications more quickly you can also form two candidates after each resolution,
-consisting of each as a base and the other as a single clause chain.
+if any set of clauses of some form can derive a new clause of one of that forms.
+A scheme is derived which subsumes all such resolutions.
 
 \subsubsection{Implications}
 
 When given a candidate the important property to ensure is that if it can be resolved indefinitely,
 then a scheme which subsumes all of these clauses is derived.
 
-In order to ensure this, take the start clause and create all of its resolutions with the chain.
-Find a complete set of mutually Subsumptive clauses.
-Resolve that clause with the clauses in the chain.
-For each clause you get through that resolution create a new implication from the MGMSC to the resolved clause.
+First mark all leaf clauses of the same form as the conclusion as suppositions.
 
-This implication must be valid as by assuming the hypothesis the conclusion was derived within the problem.
-This implication will be put in a scheme with the start clause as the base because its hypothesis (the MGMSC) subsumes the start clause.
-This implication will subsume the chain of resolutions because when the implication is applied to the base,
-  it will produce the end clause.
-
-The complete set of mutually subsumptive clauses of two clauses must have the following properties
+The following properties should be vetted.
 \begin{itemize}
-  \item Each element must subsume both clauses
-  \item Some element must subsume any clause which subsumes both clauses
+  \item There is at least one supposition
+  \item The conclusion can larger than all of the hypothesis
+  \item The conclusion can be a non-tautology
 \end{itemize}
 
+Once these properties are verified find the most specific form of the suppositions and conclusion.
+
+This can be found by a process much like unification except when two clauses are not unifiable instead 
+  of failing replace them with a variable.
+
+Next resolve clauses in the tree, with all the suppositions replaced by the most specific form.
+The resulting clauses are the conclusions and the suppositions are the implications.
 
 
-In order to find the complete set of mutualy subsuming clauses find
+\subsection{Subsumption}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
