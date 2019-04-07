@@ -2,7 +2,12 @@
 \usepackage[utf8]{inputenc}
 
 \title{Automated Reasoning}
-\author{Brian Kuhns}
+\author{
+    Brian Kuhns,
+    Thomas Johnson,
+    Gram Northrup,
+    Josh Gordon
+  } % please add the other names and corect any mis spellings
 \date{April 2019}
 
 \begin{document}
@@ -11,15 +16,11 @@
 
 \section{Introduction}
 
-  Someone better at writing do this part.
-
-\section{Algorithm}
-
 The algorithm is an extension of ordered resolution,
 which attempts to find finite representations of infinite clause families,
 and proceed with ordered resolution on these families.
 
-\subsection{Anatomy of a Scheme}
+\section{Anatomy of a Scheme}
 
 A scheme has 2 parts:
 a list of implications and a list of base clauses.
@@ -38,11 +39,11 @@ Without these properties resolution and subsumption become much more complex, an
 A scheme is said to contain a clause iff it can be derived by applying some finite sequence of the 
 implications to the base clauses.
 
-\subsection{Learning Implications}
+\section{Learning Implications}
 
 Learning implications is done in two phases: finding candidates and constructing implications from them.
  
-\subsubsection{Candidates}
+\subsection{Candidates}
 
 A candidate is a tree whose nodes are clauses and whose leafs are clauses.
 Suppositions are also clauses but they are handled differently to construct implications.
@@ -57,7 +58,7 @@ The important property to have is that,
 if any set of clauses of some form can derive a new clause of one of that forms.
 A scheme is derived which subsumes all such resolutions.
 
-\subsubsection{Implications}
+\subsection{Implications}
 
 When given a candidate the important property to ensure is that if it can be resolved indefinitely,
 then a scheme which subsumes all of these clauses is derived.
@@ -69,6 +70,7 @@ The following properties should be vetted.
   \item There is at least one supposition
   \item The conclusion can larger than all of the hypothesis
   \item The conclusion can be a non-tautology
+  \item The conclusion has at least as many predicates as the hypotheses
 \end{itemize}
 
 Once these properties are verified find the most specific form of the suppositions and conclusion.
@@ -80,30 +82,74 @@ Next resolve clauses in the tree, with all the suppositions replaced by the most
 The resulting clauses are the conclusions and the suppositions are the implications.
 
 
-\subsection{Subsumption}
+\section{Subsumption}
+
+\subsection{Clause to Scheme}
+  
+  A clause subsumes an implication if it subsumes the conclusion.
+  Clause to Scheme is not necessary if the implications can be subsumed and the schemes are rebuilt each round.
+ 
+\subsection{Scheme to Clause}
+A scheme subsumes a clause if it contains any clauses which subsume that clause.
+To determine this: 
+  First check if the target is a base clause.
+  For any conclusion of an implication which subsumes the target
+    apply the unifier of that subsumption to each of the hypotheses of the implication and treat these as the new targets
+    if all of theme are subsumed this is successful.
+  When doing this maintain a state of the list of previous targets on each recursive call and fail to find a target if it is in this list
+  this should prevent some infinite loops without causing unnecessary failure.
+
+\subsection{Scheme to Scheme}
+
+A scheme subsumes a scheme if all clauses derived by the right scheme are subsumed by a clause derived by the left scheme
+To determine this:
+  This is equivalent to the right base clause being subsumed by the left scheme
+  so this step can be skipped as long as the schemes are rebuilt every layer.
+
+\section{Resolution}
+
+\subsection{Scheme with Clause}
+
+To resolve a scheme against a clause it is necessary to create a list of clauses and implications containing every
+clause which could be derived by resolving any clause in the scheme with the clause. 
+
+To determine this:
+For each implication in the scheme if the conclusion resolves with the clause 
+  the result of this resolution is the new conclusion
+  to get the new hypotheses apply the unifier to each of the hypotheses
+  also resolve the clause against each of the base clauses.
+
+\subsection{Scheme with Scheme}
 
 
+    To resolve a scheme against a scheme it is necessary to create a list of clauses and schemes containing every clause which could be derived by resolving any clause in one scheme with a clause in the other.
+    In order to do this, for each pair of conclusions (one left one right) that resolve, find the new implications, and the new clauses.
 
+\subsubsection{New implications}
+  
+  To find the new implications: For both schemes create a list of predicate-level functions corresponding to how each implication changes the predicate
+  used in the resolution.
+  The predicate-level functions should be stored with the clause-level function that causes that predicate-level change.
 
+  Next begin a stateful recursive chase.
+    The state is the previously encountered problems and the list of clause and predicate level functions have been applied.
+    When you encounter a problem you've seen before create an implication
+    from the original resolution to the resolution after applying all the clause level functions
 
+\subsection{New Clauses}
 
+          To find a generating base of resolutions unify each base clause of one schema with the other schema.
+             This works because the hypotheses of each implication subsumes the conclusion so if there is a failure to unify nothing derived by it will unify either.
+             If there is a successful unification then the search can stop because any further unifications would be absorbed by the implications.
 
+\section{Finding Empty Clauses}
+  As no implication decreases the number of literals in a clause schema only conatin the empty clause if it is a base clause.
+  Thus it is sufficent to check clauses for the empty clause.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+\section{Tautology Removal}
+  I don't know a way to ensure tautology removal in schema.
+  I don't think it is nesecary for corectness.
+  
 
 
 
