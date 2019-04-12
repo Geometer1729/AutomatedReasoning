@@ -1,2 +1,5 @@
 *.hi
 *.o
+README.pdf
+README.aux
+README.log

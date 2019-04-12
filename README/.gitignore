@@ -1,0 +1,6 @@
+# generate your own pdf
+README.pdf
+# generation artifacts of pdflatex
+README.log
+README.aux
+texput.log
