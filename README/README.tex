@@ -6,9 +6,8 @@
     Brian Kuhns,
     Thomas Johnson,
     Graham Northup,
-    Josh Gordon,
-    Samuel Heater
-  } % please add the other names and correct any mis spellings
+    Josh Gordon
+  } % please add the other names and corect any mis spellings
 \date{April 2019}
 
 \begin{document}
@@ -26,20 +25,13 @@ and proceed with ordered resolution on these families.
 A scheme has 2 parts:
 a list of implications and a list of base clauses.
 
-Each implication is a list of hypothesis clauses and a conclusion clause, hereafter the hypotheses and the conclusion respectively,
-signifying that the and of all of the hypotheses implies the conclusion.
-The application of an implication to a list of clauses is possible when the list of clauses can be unified with the hypotheses,
-the result of which is the conclusion with the unifier of the list of clauses and the hypotheses applied to it.
-An implication is syntactically valid if each hypothesis clause subsumes the conclusion.
-This ensures that an implication can be applied iteratively, as any clause derived will be subsumed by the conclusion and thus the hypothesis.
+Each implication is a list of clauses and a clause.
+Signifying that the and of all of left clauses implies the right clause,
+hereafter the hypotheses and the conclusion.
 
-
+An implication is syntactically valid if each hypothesis subsumes the conclusion.
 A scheme is syntactically valid if each implication is valid and
-each hypothesis of each implication subsumes all of the base clauses.
-This ensures that every implication can be applied to every set of clauses in the scheme,
-provided the set has the same number of clauses as the set of hypotheses.
-
-A clause is in a scheme if it is a base clause or can be derived by applying the implications clauses in the scheme.
+each hypothesis of each implication subsumes each base clause.
 
 These properties are important because they ensure that any implication can be applied to any set of clauses in the scheme.
 Without these properties resolution and subsumption become much more complex, and may be undecidable.
@@ -153,12 +145,12 @@ For each implication in the scheme if the conclusion resolves with the clause
              If there is a successful unification then the search can stop because any further unifications would be absorbed by the implications.
 
 \section{Finding Empty Clauses}
-  As no implication decreases the number of literals in a clause schema only contain the empty clause if it is a base clause.
-  Thus it is sufficient to check clauses for the empty clause.
+  As no implication decreases the number of literals in a clause schema only conatin the empty clause if it is a base clause.
+  Thus it is sufficent to check clauses for the empty clause.
 
 \section{Tautology Removal}
   I don't know a way to ensure tautology removal in schema.
-  I don't think it is necessary for correctness.
+  I don't think it is nesecary for corectness.
   
 
 
