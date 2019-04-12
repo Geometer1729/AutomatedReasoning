@@ -1,5 +1,6 @@
 *.hi
 *.o
+Main
 README.pdf
 README.aux
 README.log
