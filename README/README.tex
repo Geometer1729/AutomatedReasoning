@@ -2,12 +2,23 @@
 \usepackage[utf8]{inputenc}
 \usepackage{amssymb}
 
+\newcommand{\allclauses}[0]{{\bf C}}
+\newcommand{\allvars}[0]{{\bf V}}
+\newcommand{\allpreds}[0]{{\bf P}}
+\newcommand{\allterms}[0]{{\bf T}}
+\newcommand{\fullpreds}[0]{\allpreds_{+}}
+\newcommand{\allfuncs}[0]{{\bf F}}
+\newcommand{\constfuncs}[0]{\allfuncs_0}
+\newcommand{\true}[0]{\top}
+\newcommand{\false}[0]{\bot}
+\newcommand{\nat}[0]{{\mathbb N}}
+
 \title{Automated Reasoning}
 \author{
 	Brian Kuhns,
 	Chris Lynch,
 	Dohan Kim,
-	Gabe Tucker,
+	Gabe Tucker, \\
 	Graham Northup,
 	Josh Gordon,
 	Samuel Heater,
@@ -21,14 +32,31 @@
 
 \section{Introduction}
 
+
 The algorithm is an extension of ordered resolution,
 which attempts to find finite representations of infinite clause families,
 and proceed with ordered resolution on these families.
 
+\section{Formalities}
+
+Let all clauses in a universe be denoted by $\allclauses$, with:
+\begin{itemize}
+	% \item $\allvars \subset \allclauses$ be the set of all free variables for unification (denoted hereafter as $x, y, z, \ldots$, with subscript where appropriate);
+	\item $\allfuncs_n$ be the set of all functions with arity $n$ mapping $n$ elements of the Herbrand universe to a single element in the Herbrand universe. Functions are assumed to be equivalent by name and by structure. The set $\constfuncs$ refers specifically to "constants" (nilary functions), which are equivalent only to themselves. Hereafter, by convention, $a, b, d, e, \ldots$ represent the constants $\constfuncs$ ($c$ commonly denotes "any clause"), while $f, g, h, \ldots$ represent the non-constant functions $\allfuncs - \constfuncs$.
+	\item $\allterms$ is the set of all functions of either specific elements of the Herbrand universe, or variables representing objects in the Herbrand Universe. The elements of this set $\allterms$ are denoted as terms. Hereafter, variables are usually denoted $x, y, z, \ldots$, with subscripts as appropriate.
+	\item $\allpreds_n : \allterms^n \rightarrow \{\true,\false\}$ be the set of all predicates on $n$ terms. % $\true \in \allpreds$, $\false \in \allpreds$, and every $p \in \allpreds$ maps some (possibly empty) sequence of clauses $(c_1,\ldots,c_n)$ to the set $\{\true, \false\}$;
+	\item Let ${\bf D}_n$ be the set of all disjunctions over predicates of size $n$:
+		$$
+		\forall p_0,\ldots,p_n \in P: \bigvee_{0 \leq i \leq n} p_i;
+		$$
+		then $\allclauses = \bigcup_{n \in \nat} {\bf D}_n.$
+\end{itemize}
+
+Let $\models$ indicate the "proves" relation, a binary relation over $\allclauses \times \allclauses$ which is reflexive and transitive.
+
 \section{Anatomy of a Scheme}
 
-A scheme has 2 parts:
-a finite set of implications and a finite set of base clauses, $(I, B)$, where each implication $i \in I$ is a finite set of hypothesis clauses and a conclusion clause $(H, c)$, such that
+Define a scheme as the two-tuple $(I, B)$ with $B \subseteq \allclauses$ being the set of applicable clauses for this scheme, and $I$ being the set of implications. Define an implication as $(H, c)$ with $H \subseteq \allclauses$ being the hypotheses of this implication, and $c \in \allclauses$ being the conclusion implied by the truth of all hypotheses; symbolically:
 
 $$
 \bigwedge_{h \in H} h \models c.
@@ -36,6 +64,8 @@ $$
 
 The application of an implication to a set of clauses is possible when the set of clauses can be unified with the hypotheses of that implication,
 the result of which is the conclusion with the unifier of the set of clauses and the hypotheses applied to it.
+
+
 An implication is syntactically valid if each hypothesis clause subsumes the conclusion.
 This ensures that an implication can be applied iteratively, as any clause derived will be subsumed by the conclusion and thus the hypothesis.
 
