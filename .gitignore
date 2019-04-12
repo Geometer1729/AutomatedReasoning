@@ -1,4 +1,7 @@
 *.hi
 *.o
+Main
 *.aux
 *.log
+# Make your own pdf
+*.pdf

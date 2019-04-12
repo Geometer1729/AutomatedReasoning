@@ -1,0 +1,4 @@
+*.aux
+*.log
+# make your own pdf
+*.pdf
