@@ -54,6 +54,8 @@ Let all clauses be denoted by $\allclauses$, and let:
     \forall l_0,\ldots,l_{n-1} \in \allliterals: \bigvee_{0 \leq i < n} l_i \in \bf D_n;
 		$$
 		then $\allclauses = \bigcup_{n \in \nat} {\bf D}_n.$
+  \item An assignment is an ordered pair of a variable and a term indicating that that variable is assigned to that term.
+  \item A substitution is a set of assignments which don't conflict.
 \end{itemize}
 
 Let $\models$ indicate the {\it proves} relation, a relation from $\powerset{\allclauses}$ to $\allclauses$.
@@ -64,14 +66,14 @@ It has the following useful properties:
 
 \section{Anatomy of a Scheme}
 
-Define a scheme as the pair $(I, B)$ with $B \subseteq \allclauses$ being the set of base clauses in this scheme, and $I$ being the set of implications. Define an implication as $H \rightarrow c$ with $H \subseteq \allclauses$ being the hypotheses of this implication, and $c \in \allclauses$.
+Define a scheme as the pair $(I, B)$ with $B \subseteq \allclauses$ being the set of base clauses in this scheme, and $I$ being the set of implications. Define an implication as $H \rightarrow c$ with $H \subseteq \allclauses$ being the hypotheses of this implication, and $c \in \allclauses$ being the conclusion.
 
 The application of an implication to a set of clauses is possible when the conjunction of the set of clauses can be unified with the conjunction of the hypotheses of that implication,
-the result of which is the conclusion with the unifier of the set of clauses and the hypotheses applied to it.Symbolically
-with $S'$ a set of clauses in the scheme $S$ the set of clauses in the scheme and $(H,c)$ is an implication.
+the result of which is the conclusion with the unifier of the set of clauses and the hypotheses applied to it. Symbolically
+ $S$ the set of clauses in the scheme, $S' \subseteq S$, $(H,c)$ is an implication, and $\sigma$ is the most general substitution of $S'$ and $H$.
 
 \begin{equation}
-  (S' \sigma \models H \sigma) \Rightarrow c \sigma \in S
+  (S' \sigma \sqsubseteq H \sigma) \Rightarrow c \sigma \in S
 \end{equation}
 
 
