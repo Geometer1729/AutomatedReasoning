@@ -54,7 +54,7 @@ clauseArrange xs = case group . sort $ xs of
   (y:ys) -> (y,concat ys)
   [] -> ([],[])
 
-data History = BinTree Clause
+type History = BinTree ID
 
 type Implication = ([Clause],Clause)
 

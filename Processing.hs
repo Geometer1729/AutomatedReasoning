@@ -2,6 +2,7 @@
 module Processing where
 
 import Types
+import BinTree
 import ShowTex
 import Control.Monad
 import Control.Monad.State
@@ -40,7 +41,7 @@ resolveHist :: (Clause,History) -> (Clause,History) -> State (ID,ID) [(Clause,Hi
 resolveHist (lc,lh) (rc,rh) = do
   (cid,tid) <- get
   -- the lists of predicates which make up the new clauses
-  let predicateLists = [ (ps,Derived id lh rh) | (ps,id) <- zip (resolve lc rc) [cid..] ] :: [([Predicate],History)]
+  let predicateLists = [ (ps,Node id lh rh) | (ps,id) <- zip (resolve lc rc) [cid..] ] :: [([Predicate],History)]
   -- the predicates but renamed
   let (renamed,tid') = runState ( sequence [ fmap (\x -> (x,h)) (rename p)   | (p,h) <- predicateLists ] ) tid :: ([([Predicate],History)],ID)
   -- new clauses
@@ -82,7 +83,7 @@ subsumption ls rs = (ls',rs'')
 initialize :: [[Predicate]] -> Layer
 -- no clauses have been processed all are new and all are given
 -- The clause namespace is used up to the length of the given list
-initialize pss = Layer [] [] ([ (c,Given n) | (c,n) <- (zip pss [0..])]) [] M.empty (length pss) (getFree pss)
+initialize pss = Layer [] [] ([ (c,Leaf n) | (c,n) <- (zip pss [0..])]) [] M.empty (length pss) (getFree pss)
 
 {-
  - Schemea

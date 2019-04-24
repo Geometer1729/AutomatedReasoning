@@ -4,6 +4,7 @@ module ShowTex where
 import Types
 import Namespace
 import Text.Show
+import BinTree
 
 class NsShow a where
   nsshow :: a -> Namespace -> String
@@ -71,8 +72,8 @@ instance {-# OVERLAPPING #-} Show [Term] where
   show [] = error "Attempt to show an empty list of terms"
 
 instance Show History where
-  show (Given n) = "G " ++ show n
-  show (Derived n h1 h2) = "D " ++ (show n) ++ "\n" ++  (indent . show $ h1) ++ "\n" ++  (indent . show $ h2)
+  show (Leaf n) = "G " ++ show n
+  show (Node n h1 h2) = "D " ++ (show n) ++ "\n" ++  (indent . show $ h1) ++ "\n" ++  (indent . show $ h2)
     where
       indent = init . unlines . map ("  " ++) . lines
 
@@ -82,7 +83,7 @@ instance Show Layer where
       ps = processedClauses l 
       us = unprocessedClauses l
       chShow :: (Clause,History) -> String
-      chShow (c,h) = unlines [show c,show h]
+      chShow (c,h) = unlines [show c]
 
   -- TODO
 --instance TexShow Layer where

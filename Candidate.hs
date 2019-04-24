@@ -10,8 +10,8 @@ import Control.Monad
 import Control.Applicative
 import Control.Comonad
 
-getCandidate :: (M.Map ID Clause) -> (Clause,BinTree ID) -> [Candidate] 
-getCandidate clauses (c,h) = catMaybes [ matchCands st tree | st <- subTrees ]
+getCandidate :: (M.Map ID Clause) -> BinTree ID -> [Candidate] 
+getCandidate clauses h = catMaybes [ matchCands st tree | st <- subTrees ]
   where
     subTrees = toList . duplicate $ tree
     tree = fmap getClause h :: Candidate
