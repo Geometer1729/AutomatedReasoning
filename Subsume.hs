@@ -46,10 +46,6 @@ instance Subsumable [Predicate] where -- subsume some term in the right list wit
       subs' <- on subsumes' (applySubs subs) xs ys
       return (subs ++ subs')
 
-instance Subsumable Clause where 
-  -- concatenates the clause to a list of predicates and use the [Predicate] instance
-  subsumes' = on subsumes' (uncurry (++))
-
 instance Subsumable (Clause,a) where
   subsumes' (l,_) (r,_) = subsumes' l r
 

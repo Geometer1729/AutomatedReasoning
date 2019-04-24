@@ -20,12 +20,6 @@ idshow id ns tt = case unmap ns id of
     SymbolNilary -> "a" ++ show id
     SymbolVariable -> "X" ++ show id
 
-instance {-# OVERLAPPING #-} NsShow Clause where
-  nsshow ([],[]) ns = "|"
-  nsshow (l,[]) ns = (nsshow l ns) ++ " |"
-  nsshow ([],r) ns = "| " ++ nsshow r ns
-  nsshow (l,r) ns = (nsshow l ns) ++ " | " ++ nsshow r ns
-
 instance NsShow Predicate where
   nsshow (P True id []) ns = idshow id ns SymbolPredicate
   nsshow (P True id lt) ns = (idshow id ns SymbolPredicate) ++ "(" ++ (nsshow lt ns) ++ ")"
@@ -48,16 +42,12 @@ instance {-# OVERLAPPING #-} NsShow [Term] where
   nsshow [] ns = error "Attempt to nsshow an empty list of terms"
 
 instance NsShow Layer where
-  nsshow (Layer ps us _ _) ns = unlines $ "begin layer\nProcesed" : (map chShow ps) ++ ["Unprocessed"] ++ (map chShow us) ++ ["end layer"]
+  nsshow l ns = unlines $ "begin layer\nProcesed" : (map chShow ps) ++ ["Unprocessed"] ++ (map chShow us) ++ ["end layer"]
     where
+      ps = processedClauses l 
+      us = unprocessedClauses l
       chShow :: (Clause,History) -> String
-      chShow (c,h) = unlines [nsshow c ns,show h]
-
-instance {-# OVERLAPPING #-} Show Clause where
-  show ([],[]) = "|"
-  show (l,[]) = show l ++ " |"
-  show ([],r) = "| " ++ show r
-  show (l,r) = show l ++ " | " ++ show r
+      chShow (c,h) = unlines [nsshow c ns]
 
 instance Show Predicate where
   show (P True id []) = "P" ++ show id
@@ -87,8 +77,10 @@ instance Show History where
       indent = init . unlines . map ("  " ++) . lines
 
 instance Show Layer where
-  show (Layer ps us _ _) = unlines $ "begin layer\nProcesed" : (map chShow ps) ++ ["Unprocessed"] ++ (map chShow us) ++ ["end layer"]
+  show l = unlines $ "begin layer\nProcesed" : (map chShow ps) ++ ["Unprocessed"] ++ (map chShow us) ++ ["end layer"]
     where
+      ps = processedClauses l 
+      us = unprocessedClauses l
       chShow :: (Clause,History) -> String
       chShow (c,h) = unlines [show c,show h]
 
@@ -105,12 +97,6 @@ idtexshow id ns tt = case unmap ns id of
     SymbolFunction -> "f_{" ++ show id ++ "}"
     SymbolNilary -> "a_{" ++ show id ++ "}"
     SymbolVariable -> "X_{" ++ show id ++ "}"
-
-instance TexShow Clause where
-  texshow ([],[]) ns = "$|$"
-  texshow (l,[]) ns = "$" ++  (texshow l ns) ++ " |$"
-  texshow ([],r) ns = "| " ++ (texshow r ns)
-  texshow (l,r) ns = "$" ++ (texshow l ns) ++ " | " ++ (texshow r ns) ++ "$"
 
 instance TexShow Predicate where
   texshow (P True id []) ns = (idtexshow id ns SymbolPredicate)

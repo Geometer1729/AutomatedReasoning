@@ -18,9 +18,6 @@ instance Subable Term where
 instance Subable Predicate where
   applySub sub (P b i ts) = P b i (applySub sub ts) -- apply over the terms
 
-instance Subable Clause where
-  applySub u (ls,rs) = (applySub u ls,applySub u rs)
-
 instance Subable (Clause,a) where
   applySub s (x,y) = (applySub s x,y)
 

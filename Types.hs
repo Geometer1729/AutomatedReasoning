@@ -1,5 +1,7 @@
 module Types where
+import BinTree
 import Data.List
+import qualified Data.Map as M
 
 {-
  - PARSING LAND
@@ -45,18 +47,25 @@ instance Ord Term where
     EQ -> compare lts rts
 
 --An `or` of a list of predicates
-type Clause = ([Predicate],[Predicate]) --resolvable terms other terms
+type Clause = [Predicate] --resolvable terms other terms
 
-clauseArrange :: [Predicate] -> Clause
+clauseArrange :: Clause -> (Clause,Clause)
 clauseArrange xs = case group . sort $ xs of
   (y:ys) -> (y,concat ys)
   [] -> ([],[])
 
-data History = Given ID | Derived ID History History 
+data History = BinTree Clause
+
+type Implication = ([Clause],Clause)
+
+type Candidate = BinTree Clause
 
 data Layer = Layer {
    processedClauses   :: [(Clause,History)]
+  ,processedImplications :: [Implication]
   ,unprocessedClauses :: [(Clause,History)]
+  ,unprocessedImplications :: [Implication]
+  ,table :: M.Map ID Clause
   ,nextFreeClauseID :: ID -- requires all subsequent ids are free
   ,nextFreeVarID :: ID
   } 
@@ -64,5 +73,5 @@ data Layer = Layer {
 type Sub = (ID,Term) -- the variable id and the term
 type Unifier = Maybe [Sub] -- the list of substitutions 
 type Schema = ([(Predicate,Predicate)],[Predicate]) 
--- The left list is a list of patterns which implie other paterns 
--- The right list is the list of arguments over which the left list can be itterated
+-- The left list is a list of patterns which imply other patterns 
+-- The right list is the list of arguments over which the left list can be iterated
