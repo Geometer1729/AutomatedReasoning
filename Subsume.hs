@@ -9,7 +9,7 @@ import Data.Maybe
 import Control.Monad
 
 class Subable a => Subsumable a where
-  subsumes' :: a -> a -> Unifier
+  subsumes' :: a -> a -> Maybe Unifier
   subsumes :: a -> a -> Bool
   subsumes l r = isJust $ subsumes' l r
 
@@ -28,7 +28,7 @@ instance Subsumable [Term] where -- Subsume each term in the right list with the
     -- get the substitutions required to subsume the first right term with the first left term
     subs <- subsumes' lt rt
     -- apply those substitutions and then subsume the remaining list of terms
-    subs' <- on subsumes' (applySubs subs) lts rts
+    subs' <- on subsumes' (applyUnif subs) lts rts
     -- return all of the necessary subsumptions
     return (subs ++ subs')
   subsumes' _ _ = error "tried to subsume uneven lists of terms"
@@ -43,7 +43,7 @@ instance Subsumable [Predicate] where -- subsume some term in the right list wit
     (y,ys) <- getEntsWithRest rs
     return $ do -- maybe monad
       subs <- subsumes' x y
-      subs' <- on subsumes' (applySubs subs) xs ys
+      subs' <- on subsumes' (applyUnif subs) xs ys
       return (subs ++ subs')
 
 instance Subsumable (Clause,a) where

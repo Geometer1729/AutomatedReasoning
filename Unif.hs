@@ -8,7 +8,7 @@ import Control.Monad
 import Data.Function
 
 class Subable a => Unifiable a where 
-  unify :: a -> a -> Unifier
+  unify :: a -> a -> Maybe Unifier
   unifies :: a -> a -> Bool
   unifies x y = isJust $ unify x y
 
@@ -24,15 +24,15 @@ instance Unifiable [Term] where
   unify [] [] = Just []
   unify (tl:tsl) (tr:tsr) = do
     subs <- unify tl tr -- subs to unify first term from each list 
-    subs' <- on unify (applySubs subs) tsl tsr -- subs to unify the remainder of the list
+    subs' <- on unify (applyUnif subs) tsl tsr -- subs to unify the remainder of the list
     return (subs ++ subs') -- return all the substitutions
   unify _ _ = error "unify on a list of terms expects lists of the same length"
 
 instance Unifiable Predicate where
   unify (P lb ln lts) (P rb rn rts) = guard (lb == rb && ln == rn) *> unify lts rts
 
-applyUnif :: (Unifiable a) => Unifier -> a -> Maybe a
+applyMaybeUnif :: (Unifiable a) => Maybe Unifier -> a -> Maybe a
 -- apply subs if Unifier is Just else return Nothing
-applyUnif unifier x = do
-  subs <- unifier 
-  return $ applySubs subs x 
+applyMaybeUnif maybeUnif x = do
+  unif <- maybeUnif 
+  return $ applyUnif unif x 

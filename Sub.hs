@@ -21,8 +21,7 @@ instance Subable Predicate where
 instance Subable (Clause,a) where
   applySub s (x,y) = (applySub s x,y)
 
-applySubs :: (Subable a) => [Sub] -> a -> a 
--- empty list do nothing
-applySubs []     x = x
-applySubs (s:ss) x = applySubs ss $ applySub s x
+applyUnif :: (Subable a) => Unifier -> a -> a 
+applyUnif []     x = x
+applyUnif (s:ss) x = applyUnif ss $ applySub s x
 

@@ -6,7 +6,7 @@ import Control.Monad.State
 
 class Subable a => Renamable a where -- Can be renamed
   -- the ID is the free Id 
-  -- THe [ID] is the IDs which have already been renamed
+  -- The [ID] is the IDs which have already been renamed
   getSubs :: a -> State (ID,[ID]) [Sub]
 
 instance Renamable a => Renamable [a] where
@@ -49,5 +49,5 @@ rename x = do
   -- set the new free ID
   put fi'
   -- return x with the subs applied
-  return $ applySubs subs x
+  return $ applyUnif subs x
 

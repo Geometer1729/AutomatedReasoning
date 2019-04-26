@@ -71,7 +71,7 @@ data Layer = Layer {
   } 
 
 type Sub = (ID,Term) -- the variable id and the term
-type Unifier = Maybe [Sub] -- the list of substitutions 
+type Unifier = [Sub] -- the list of substitutions 
 type Schema = ([(Predicate,Predicate)],[Predicate]) 
 -- The left list is a list of patterns which imply other patterns 
 -- The right list is the list of arguments over which the left list can be iterated

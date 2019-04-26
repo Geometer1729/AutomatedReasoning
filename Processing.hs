@@ -21,7 +21,7 @@ import qualified Data.Map as M
  - Resolution
  -}
 
-resolvePreds :: Predicate -> Predicate -> Unifier
+resolvePreds :: Predicate -> Predicate -> Maybe Unifier
 -- return the unifier required to resolve to predicates
 resolvePreds (P lb li lts) (P rb ri rts) = (guard $ (lb /= rb) && (li == ri)) *> unify lts rts
 
@@ -33,7 +33,7 @@ resolve lc rc = catMaybes $ do -- list monad
   return $ do -- maybe monad
     -- if the resolution is possible return a new clause with the other predicates
     u <- resolvePreds l r 
-    return $ applySubs u (ls ++ rs)
+    return $ applyUnif u (ls ++ rs)
 
 resolveHist :: (Clause,History) -> (Clause,History) -> State (ID,ID) [(Clause,History)]
 -- returns resolved clauses with their histories
