@@ -1,0 +1,1 @@
+p(a()) and (~p(x) or p(f(x))) and (~p(f(a())))
