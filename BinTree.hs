@@ -21,3 +21,4 @@ toList (Node x l r) = (toList l) ++ [x] ++ (toList r)
 leaves :: BinTree a -> [a]
 leaves (Leaf x) = [x]
 leaves (Node _ l r) = leaves l ++ leaves r
+

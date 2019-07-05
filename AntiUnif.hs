@@ -82,8 +82,3 @@ test = do
   print $ runStateT (antiUnif a b) 5
   print $ runStateT (antiUnif a c) 5
   print $ runStateT (antiUnif b c) 5
-  
-
-
-
-

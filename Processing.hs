@@ -2,6 +2,7 @@
 module Processing where
 
 import Types
+import Implications
 import BinTree
 import ShowTex
 import Control.Monad
@@ -14,6 +15,7 @@ import Unif
 import Renameable
 import Nameable
 import ListUtil
+import Control.Comonad
 import qualified Data.Map as M
 
 
@@ -50,7 +52,7 @@ resolveHist (lc,lh) (rc,rh) = do
 
 stepLayer :: Layer -> Layer
 -- move the unprocesed clauses to processed and add the new clauses
-stepLayer (Layer pcs _ ucs _ _ cid tid) = Layer ocs [] ncs' [] M.empty cid' tid'
+stepLayer (Layer pcs pimps ucs uimps cmap cid tid) = Layer ocs newpimps ncs' newuimps cmap' cid' tid'
   where
     -- list of all pairs which need to be resolved
     targs = resTargets pcs ucs
@@ -60,6 +62,15 @@ stepLayer (Layer pcs _ ucs _ _ cid tid) = Layer ocs [] ncs' [] M.empty cid' tid'
     -- concatenated down to just a list of clauses
     ncs = concat ncss
     (ocs,ncs') = subsumption (pcs ++ ucs) ncs
+    cmap' = updateCmap cmap ncs
+    newpimps = pimps ++ uimps
+    newuimps = genImps cmap' (map snd (pcs ++ ucs))
+
+updateCmap :: M.Map ID Clause -> [(Clause,History)] -> M.Map ID Clause
+updateCmap m xs = foldl addClauseCmap m xs 
+  where
+    addClauseCmap :: M.Map ID Clause -> (Clause,History) -> M.Map ID Clause
+    addClauseCmap m (c,h) = M.insert (extract h) c m
 
 anySubsume :: (Subsumable a) => [a] -> a -> Bool
 -- checks if the second argument is subsumed by any of the things in the list
@@ -83,7 +94,7 @@ subsumption ls rs = (ls',rs'')
 initialize :: [[Predicate]] -> Layer
 -- no clauses have been processed all are new and all are given
 -- The clause namespace is used up to the length of the given list
-initialize pss = Layer [] [] ([ (c,Leaf n) | (c,n) <- (zip pss [0..])]) [] M.empty (length pss) (getFree pss)
+initialize pss = Layer [] [] ([ (c,Leaf n) | (c,n) <- (zip pss [0..])]) [] (M.fromList $ zip [0..] pss) (length pss) (getFree pss)
 
 {-
  - Schemea

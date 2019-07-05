@@ -4,6 +4,7 @@ module ShowTex where
 import Types
 import Namespace
 import Text.Show
+import Data.List
 import BinTree
 
 class NsShow a where
@@ -43,12 +44,13 @@ instance {-# OVERLAPPING #-} NsShow [Term] where
   nsshow [] ns = error "Attempt to nsshow an empty list of terms"
 
 instance NsShow Layer where
-  nsshow l ns = unlines $ "begin layer\nProcesed" : (map chShow ps) ++ ["Unprocessed"] ++ (map chShow us) ++ ["end layer"]
+  nsshow l ns = unlines $ "begin layer\nProcesed" : (map chShow ps) ++ ["Unprocessed"] ++ (map chShow us) ++ ["end layer","imps:", imps]
     where
       ps = processedClauses l 
       us = unprocessedClauses l
       chShow :: (Clause,History) -> String
       chShow (c,h) = unlines [nsshow c ns]
+      imps = unlines [ intercalate "," [ nsshow h ns | h <- hs ] ++ "->" ++ nsshow c ns ++ "\n" | (hs,c) <- (processedImplications l ++ unprocessedImplications l) ]
 
 instance Show Predicate where
   show (P True id []) = "P" ++ show id
@@ -71,7 +73,7 @@ instance {-# OVERLAPPING #-} Show [Term] where
   show (t:l) = show t ++ ", " ++ show l
   show [] = error "Attempt to show an empty list of terms"
 
-instance Show History where
+instance Show a => Show (BinTree a) where
   show (Leaf n) = "G " ++ show n
   show (Node n h1 h2) = "D " ++ (show n) ++ "\n" ++  (indent . show $ h1) ++ "\n" ++  (indent . show $ h2)
     where
