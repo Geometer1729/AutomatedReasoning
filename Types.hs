@@ -1,4 +1,5 @@
 module Types where
+
 import BinTree
 import Data.List
 import qualified Data.Map as M
@@ -60,6 +61,8 @@ type Implication = ([Clause],Clause)
 
 type Candidate = BinTree Clause
 
+type Table = M.Map ID Clause
+
 data Layer = Layer {
    processedClauses   :: [(Clause,History)]
   ,processedImplications :: [Implication]
@@ -69,6 +72,7 @@ data Layer = Layer {
   ,nextFreeClauseID :: ID -- requires all subsequent ids are free
   ,nextFreeVarID :: ID
   } 
+
 
 type Sub = (ID,Term) -- the variable id and the term
 type Unifier = [Sub] -- the list of substitutions 

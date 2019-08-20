@@ -1,7 +1,6 @@
 module Renameable where
 import Sub
 import Types
-import Control.Monad
 import Control.Monad.State
 
 class Subable a => Renamable a where -- Can be renamed

@@ -21,10 +21,10 @@ getCandidates clauses h = catMaybes [ matchCands st tree | st <- subTrees ]
       Nothing -> error $ "namespace error. Failed to find " ++ show i ++ " in " ++ show clauses ++ " from history " ++ show h
 
 matchCands :: Candidate -> Candidate -> Maybe Candidate
-matchCands (Node x xl xr) (Node y yl yr) = guard (x `subsumes` y) >> (do
+matchCands (Node x xl xr) (Node y yl yr) = guard (x `subsumes` y) >> ((do
   l' <- matchCands xl yl
   r' <- matchCands xr yr
-  return $ Node x l' r') <|> (Just . Leaf $ x)
+  return $ Node x l' r') <|> (Just . Leaf $ x))
 matchCands l r = guard (x `subsumes` y) >> Just (Leaf x)
   where
     [x,y] = map extract [l,r] :: [Clause]

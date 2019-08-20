@@ -3,7 +3,6 @@
 module ShowTex where
 import Types
 import Namespace
-import Text.Show
 import Data.List
 import BinTree
 
@@ -14,19 +13,19 @@ class TexShow a where
   texshow :: a -> Namespace -> String
 
 idshow :: ID -> Namespace -> SymbolType -> String
-idshow id ns tt = case unmap ns id of
+idshow i ns tt = case unmap ns i of
   Just x -> x
   Nothing -> case tt of
-    SymbolPredicate -> "P" ++ show id
-    SymbolFunction -> "f" ++ show id
-    SymbolNilary -> "a" ++ show id
-    SymbolVariable -> "X" ++ show id
+    SymbolPredicate -> "P" ++ show i
+    SymbolFunction -> "f" ++ show i
+    SymbolNilary -> "a" ++ show i
+    SymbolVariable -> "X" ++ show i
 
 instance NsShow Predicate where
-  nsshow (P True id []) ns = idshow id ns SymbolPredicate
-  nsshow (P True id lt) ns = (idshow id ns SymbolPredicate) ++ "(" ++ (nsshow lt ns) ++ ")"
-  nsshow (P False id []) ns = "~" ++ idshow id ns SymbolPredicate
-  nsshow (P False id lt) ns = "~" ++ (idshow id ns SymbolPredicate) ++ "(" ++ (nsshow lt ns) ++ ")"
+  nsshow (P True i []) ns = idshow i ns SymbolPredicate
+  nsshow (P True i lt) ns = (idshow i ns SymbolPredicate) ++ "(" ++ (nsshow lt ns) ++ ")"
+  nsshow (P False i []) ns = "~" ++ idshow i ns SymbolPredicate
+  nsshow (P False i lt) ns = "~" ++ (idshow i ns SymbolPredicate) ++ "(" ++ (nsshow lt ns) ++ ")"
 
 instance {-# OVERLAPPING #-} NsShow [Predicate] where
   nsshow [p] ns = (nsshow p ns)
@@ -34,14 +33,14 @@ instance {-# OVERLAPPING #-} NsShow [Predicate] where
   nsshow [] ns = ""
 
 instance NsShow Term where
-  nsshow (V id) ns = idshow id ns SymbolVariable
-  nsshow (Symbol id []) ns = idshow id ns SymbolNilary
-  nsshow (Symbol id tl) ns = (idshow id ns SymbolFunction) ++ "(" ++ (nsshow tl ns) ++ ")"
+  nsshow (V i) ns = idshow i ns SymbolVariable
+  nsshow (Symbol i []) ns = idshow i ns SymbolNilary
+  nsshow (Symbol i tl) ns = (idshow i ns SymbolFunction) ++ "(" ++ (nsshow tl ns) ++ ")"
 
 instance {-# OVERLAPPING #-} NsShow [Term] where
   nsshow [t] ns = nsshow t ns
   nsshow (t:l) ns = (nsshow t ns) ++ ", " ++ nsshow l ns
-  nsshow [] ns = error "Attempt to nsshow an empty list of terms"
+  nsshow [] _ = error "Attempt to nsshow an empty list of terms"
 
 instance NsShow Layer where
   nsshow l ns = unlines $ "begin layer\nProcesed" : (map chShow ps) ++ ["Unprocessed"] ++ (map chShow us) ++ ["end layer","imps:", imps]
@@ -49,14 +48,14 @@ instance NsShow Layer where
       ps = processedClauses l 
       us = unprocessedClauses l
       chShow :: (Clause,History) -> String
-      chShow (c,h) = unlines [nsshow c ns]
+      chShow (c,_) = unlines [nsshow c ns]
       imps = unlines [ intercalate "," [ nsshow h ns | h <- hs ] ++ "->" ++ nsshow c ns ++ "\n" | (hs,c) <- (processedImplications l ++ unprocessedImplications l) ]
 
 instance Show Predicate where
-  show (P True id []) = "P" ++ show id
-  show (P True id lt) = "P" ++ show id ++ "(" ++ show lt ++ ")"
-  show (P False id []) = "~P" ++ show id
-  show (P False id lt) = "~P" ++ show id ++ "(" ++ show lt ++ ")"
+  show (P True i []) = "P" ++ show i
+  show (P True i lt) = "P" ++ show i ++ "(" ++ show lt ++ ")"
+  show (P False i []) = "~P" ++ show i
+  show (P False i lt) = "~P" ++ show i ++ "(" ++ show lt ++ ")"
 
 instance {-# OVERLAPPING #-} Show [Predicate] where
   show [p] = show p
@@ -64,9 +63,9 @@ instance {-# OVERLAPPING #-} Show [Predicate] where
   show [] = ""
 
 instance Show Term where
-  show (V id) = "X" ++ show id
-  show (Symbol id []) = "a" ++ show id
-  show (Symbol id tl) = "f" ++ show id ++ "(" ++ show tl ++ ")"
+  show (V i) = "X" ++ show i
+  show (Symbol i []) = "a" ++ show i
+  show (Symbol i tl) = "f" ++ show i ++ "(" ++ show tl ++ ")"
 
 instance {-# OVERLAPPING #-} Show [Term] where
   show [t] = show t
@@ -93,19 +92,19 @@ instance Show Layer where
 data SymbolType = SymbolPredicate | SymbolFunction | SymbolNilary | SymbolVariable
 
 idtexshow :: ID -> Namespace -> SymbolType -> String
-idtexshow id ns tt = case unmap ns id of
+idtexshow i ns tt = case unmap ns i of
   Just x -> x
   Nothing -> case tt of
-    SymbolPredicate -> "P_{" ++ show id ++ "}"
-    SymbolFunction -> "f_{" ++ show id ++ "}"
-    SymbolNilary -> "a_{" ++ show id ++ "}"
-    SymbolVariable -> "X_{" ++ show id ++ "}"
+    SymbolPredicate -> "P_{" ++ show i ++ "}"
+    SymbolFunction -> "f_{" ++ show i ++ "}"
+    SymbolNilary -> "a_{" ++ show i ++ "}"
+    SymbolVariable -> "X_{" ++ show i ++ "}"
 
 instance TexShow Predicate where
-  texshow (P True id []) ns = (idtexshow id ns SymbolPredicate)
-  texshow (P True id lt) ns = (idtexshow id ns SymbolPredicate) ++ "(" ++ (texshow lt ns) ++ ")"
-  texshow (P False id []) ns = "~" ++ (idtexshow id ns SymbolPredicate)
-  texshow (P False id lt) ns = "~" ++ (idtexshow id ns SymbolPredicate) ++ "(" ++ (texshow lt ns) ++ ")"
+  texshow (P True i []) ns = (idtexshow i ns SymbolPredicate)
+  texshow (P True i lt) ns = (idtexshow i ns SymbolPredicate) ++ "(" ++ (texshow lt ns) ++ ")"
+  texshow (P False i []) ns = "~" ++ (idtexshow i ns SymbolPredicate)
+  texshow (P False i lt) ns = "~" ++ (idtexshow i ns SymbolPredicate) ++ "(" ++ (texshow lt ns) ++ ")"
 
 instance TexShow [Predicate] where
   texshow [p] ns = texshow p ns
@@ -113,9 +112,9 @@ instance TexShow [Predicate] where
   texshow [] ns = ""
 
 instance TexShow Term where
-  texshow (V id) ns = (idtexshow id ns SymbolVariable)
-  texshow (Symbol id []) ns = (idtexshow id ns SymbolNilary)
-  texshow (Symbol id tl) ns = (idtexshow id ns SymbolFunction) ++ "(" ++ (texshow tl ns) ++ ")"
+  texshow (V i) ns = (idtexshow i ns SymbolVariable)
+  texshow (Symbol i []) ns = (idtexshow i ns SymbolNilary)
+  texshow (Symbol i tl) ns = (idtexshow i ns SymbolFunction) ++ "(" ++ (texshow tl ns) ++ ")"
 
 instance TexShow [Term] where
   texshow [t] ns = texshow t ns

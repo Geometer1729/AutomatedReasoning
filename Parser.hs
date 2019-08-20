@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-unused-do-bind #-}
 module Parser where
 
 import Text.ParserCombinators.ReadP

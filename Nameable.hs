@@ -1,6 +1,5 @@
 module Nameable where
 
-import Sub
 import Types
 
 class Nameable a where 

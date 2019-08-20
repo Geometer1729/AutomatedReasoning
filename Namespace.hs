@@ -13,7 +13,7 @@ empty = Namespace Data.Map.empty Data.Map.empty
 insert :: Namespace -> String -> (Int, Namespace)
 insert ns k = let
     forward' = alter (\x -> case x of
-            Just x -> Just x
+            Just y -> Just y
             Nothing -> Just $ size $ forward ns
         ) k $ forward ns
     ix = forward' ! k

@@ -1,5 +1,5 @@
-prover: UnifSub.hs Types.hs Namespace.hs ShowTex.hs Main.hs
-	ghc Main
+prover: 
+	ghc -Wall Main
 
 test: test.hs prover
 	ghc test

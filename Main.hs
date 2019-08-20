@@ -3,7 +3,9 @@ import Types
 import Parser
 import ShowTex
 import Processing
+import Control.Monad.State
 
+main :: IO ()
 main = do
   args <- getArgs 
   cons <- readFile . head $ args 
@@ -15,5 +17,6 @@ handle n s = unlines . map (flip nsshow ns) $ ls
   where
     (pss,ns) = process s 
     l = initialize pss :: Layer
-    ls = take n $ iterate stepLayer l :: [Layer]
+    ls = take n $ iterate (execState stepLayer) l :: [Layer]
+
 

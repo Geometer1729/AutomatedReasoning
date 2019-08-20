@@ -2,8 +2,6 @@
 module Tautology (isTautology) where
 
 import Control.Comonad
-import Control.Monad
-import Data.Function
 import Data.List.NonEmpty (NonEmpty(..))
 
 import Types

@@ -11,7 +11,7 @@ instance Subable a => Subable [a] where
 
 instance Subable Term where
   -- if the variable is the one being substituted, replace it; else leave it
-  applySub (id,t) v@(V iv) = if id == iv then t else v
+  applySub (i,t) v@(V iv) = if i == iv then t else v
   -- apply the substitution to each argument
   applySub sub (Symbol ids ts) = Symbol ids (map (applySub sub) ts)
 
