@@ -15,7 +15,7 @@ class Subable a => Subsumable a where
 
 instance Subsumable Term where
   -- Variable subsumes any term by unifiying to if
-  subsumes' (V id) t = Just [(id,t)] 
+  subsumes' (V i) t = Just [(i,t)] 
   -- If the function or constant has the same name subsumption is passed down to the arguments
   subsumes' (Symbol li lts) (Symbol ri rts) = (guard $ li == ri) *> subsumes' lts rts
   -- A sysmbol can't subsume a variable

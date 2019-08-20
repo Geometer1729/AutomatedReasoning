@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances #-}
 module Types where
 
 import BinTree
@@ -79,3 +80,35 @@ type Unifier = [Sub] -- the list of substitutions
 type Schema = ([(Predicate,Predicate)],[Predicate]) 
 -- The left list is a list of patterns which imply other patterns 
 -- The right list is the list of arguments over which the left list can be iterated
+
+-- show instances here to avoid Orphan instances
+
+instance Show Predicate where
+  show (P True i []) = "P" ++ show i
+  show (P True i lt) = "P" ++ show i ++ "(" ++ show lt ++ ")"
+  show (P False i []) = "~P" ++ show i
+  show (P False i lt) = "~P" ++ show i ++ "(" ++ show lt ++ ")"
+
+instance {-# OVERLAPPING #-} Show [Predicate] where
+  show [p] = show p
+  show (p:l) = show p ++ ", " ++ show l
+  show [] = ""
+
+instance Show Term where
+  show (V i) = "X" ++ show i
+  show (Symbol i []) = "a" ++ show i
+  show (Symbol i tl) = "f" ++ show i ++ "(" ++ show tl ++ ")"
+
+instance {-# OVERLAPPING #-} Show [Term] where
+  show [t] = show t
+  show (t:l) = show t ++ ", " ++ show l
+  show [] = error "Attempt to show an empty list of terms"
+
+
+instance Show Layer where
+  show l = unlines $ "begin layer\nProcesed" : (map chShow ps) ++ ["Unprocessed"] ++ (map chShow us) ++ ["end layer"]
+    where
+      ps = processedClauses l 
+      us = unprocessedClauses l
+      chShow :: (Clause,History) -> String
+      chShow (c,_) = unlines [show c]

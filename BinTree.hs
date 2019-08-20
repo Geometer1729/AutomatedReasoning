@@ -22,3 +22,8 @@ leaves :: BinTree a -> [a]
 leaves (Leaf x) = [x]
 leaves (Node _ l r) = leaves l ++ leaves r
 
+instance Show a => Show (BinTree a) where
+  show (Leaf n) = "G " ++ show n
+  show (Node n h1 h2) = "D " ++ (show n) ++ "\n" ++  (indent . show $ h1) ++ "\n" ++  (indent . show $ h2)
+    where
+      indent = init . unlines . map ("  " ++) . lines

@@ -52,9 +52,10 @@ termList f ns = let (p,ns') = predicate f True ns
                 in ([p],ns')
 
 predicate :: Formula -> Bool -> Namespace -> (Predicate,Namespace)
-predicate f@(Function s fs) b ns = let (id,ns') = insert ns s
-                                       (Symbol _ args,ns'') = formToTerm f ns'
-                                   in (P b id args,ns'')
+predicate f@(Function s _) b ns = let (i,ns') = insert ns s
+                                      (Symbol _ args,ns'') = formToTerm f ns'
+                                   in (P b i args,ns'')
+predicate _ _ _ = error "inapropriate call to predicate in parser"
 
 formToTerm :: Formula -> Namespace -> (Term,Namespace)
 formToTerm (Var s) ns = let (i,ns') = insert ns s
@@ -67,6 +68,7 @@ formToTerm (Function s fs) ns = let (i,ns') = insert ns s
                                                          in (t:termTail,n'')
                                     (args,finalNs) = listTerms fs ns'
                                 in (Symbol i args, finalNs)
+formToTerm _ _ = error "inapropriate call to formToTerm in parser"
 
 nnf :: Formula -> Formula
 nnf (Var s) = (Var s)
@@ -88,23 +90,25 @@ nnf (Quantified (Exists s) f) = Quantified (Exists s) (nnf f)
 --vars is the list of variables bound at this point in the tree
 --i is how many new names we have added
 rewrQuants :: Formula -> [String] -> Int -> Formula
-rewrQuants (Var s) vars i = Var s
+rewrQuants (Var s) _ _ = Var s
 rewrQuants (Function s fs) vars i = Function s [rewrQuants f vars i | f <- fs]
 rewrQuants (And f1 f2) vars i = And (rewrQuants f1 vars i) (rewrQuants f2 vars i) 
 rewrQuants (Or f1 f2) vars i = Or (rewrQuants f1 vars i) (rewrQuants f2 vars i)
 rewrQuants (Not f) vars i = Not $ rewrQuants f vars i
 rewrQuants (Quantified (Forall s) f) vars i = rewrQuants f (s:vars) i
 rewrQuants (Quantified (Exists s) f) vars i = rewrQuants (replExist f s vars i (length vars)) (s:vars) (succ i)
+rewrQuants (Implies _ _) _ _ = error "implication passed to rewrQuants"
 
 replExist :: Formula -> String -> [String] -> Int -> Int -> Formula
 replExist (Var s) target vars i n | s /= target = Var s
                                   | otherwise = Function ("%f"++show i) $ take n [Var v | v <- vars]
 replExist (Function s args) target vars i n = Function s (map (\f -> replExist f target vars i n) args)
-replExist (And f1 f2) target vars i n = And (replExist f1 target vars i n) (replExist f1 target vars i n)
-replExist (Or f1 f2) target vars i n = Or (replExist f1 target vars i n) (replExist f1 target vars i n)
+replExist (And f1 _) target vars i n = And (replExist f1 target vars i n) (replExist f1 target vars i n)
+replExist (Or f1 _) target vars i n = Or (replExist f1 target vars i n) (replExist f1 target vars i n)
 replExist (Not f) target vars i n = Not $ replExist f target vars i n
 replExist (Quantified (Forall s) f) target vars i n = Quantified (Forall s) $ replExist f target (s:vars) i n
 replExist (Quantified (Exists s) f) target vars i n = Quantified (Exists s) $ replExist f target vars i n
+replExist (Implies _ _) _ _ _ _ = error "implication passed to replExist"
 
 
 readFormula :: String -> Formula
