@@ -1,12 +1,13 @@
 \lstnewenvironment{code}{\lstset{language=Haskell,basicstyle=\small}}{}
+\subsection{Bin Tree}
 
 \begin{code}
 module BinTree where
 import Control.Comonad
 \end{code}
 
-This bin-tree module is writen to support derivation histories.
-For this reason each Node has exactly two children and the leavs which represent givens have no children.
+This bin-tree module is written to support derivation histories.
+For this reason each Node has exactly two children and the leaves which represent givens have no children.
 
 \begin{code}
 data BinTree a = Node a (BinTree a) (BinTree a) | Leaf a
@@ -20,17 +21,10 @@ instance Functor BinTree where
   fmap f (Node x l r) = Node (f x) (fmap f l) (fmap f r)
 \end{code}
 
-For the Comonad instance.
+Much like the BinTree type can be viewed as a restriction of Tree to trees where each node has 0 or 2 children.
+The comonad instance restricts the comonad instance for Tree.
 Extract returns the root of the tree.
-Duplicate replaces each poin in the tree with the subtree of which it is the root.
-
-The comonad laws are:
-
-\begin{itemize}
-  \item extend extract      = id
-  \item extract . extend f  = f
-  \item extend f . extend g = extend (f . extend g)
-\end{itemize}
+Duplicate replaces each point in the tree with the subtree of which it is the root.
 
 \begin{code}
 instance Comonad BinTree where
@@ -40,7 +34,7 @@ instance Comonad BinTree where
   duplicate t@(Node _ l r)  = Node t (duplicate l) (duplicate r)
 \end{code}
 
-The Foldable instance is also pretty standard, It goest left children node right children
+The Foldable instance is also pretty standard, It goes left children node right children
 
 \begin{code}
 instance Foldable BinTree where
