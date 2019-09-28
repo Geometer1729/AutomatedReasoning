@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.8.27)  28 AUG 2019 17:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.8.27)  29 AUG 2019 10:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -58,93 +58,101 @@ Package: listings 2019/02/27 1.8b (Carsten Heinz)
  (./Report.aux)
 \openout1 = `Report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 10.
-LaTeX Font Info:    ... okay on input line 10.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 10.
-LaTeX Font Info:    ... okay on input line 10.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 10.
-LaTeX Font Info:    ... okay on input line 10.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 10.
-LaTeX Font Info:    ... okay on input line 10.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 10.
-LaTeX Font Info:    ... okay on input line 10.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 10.
-LaTeX Font Info:    ... okay on input line 10.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
 \c@lstlisting=\count96
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 12.
+(Font)              <12> on input line 13.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 12.
+(Font)              <8> on input line 13.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 12.
+(Font)              <6> on input line 13.
 
-(./BinTree.lhs (/opt/texlive/2019/texmf-dist/tex/latex/listings/lstlang1.sty
+(./Types.lhs (/opt/texlive/2019/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2019/02/27 1.8b listings language file
 )
 (/opt/texlive/2019/texmf-dist/tex/latex/listings/lstlang2.sty
 File: lstlang2.sty 2019/02/27 1.8b listings language file
 )
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 13.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 19.
 
 (/opt/texlive/2019/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <9> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 13.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 19.
 
-Overfull \hbox (10.20117pt too wide) in paragraph at lines 34--35
-[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+Overfull \hbox (21.30121pt too wide) in paragraph at lines 27--28
+[][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
-LaTeX Font Info:    Try loading font information for OML+cmr on input line 42.
+[1
+
+{/opt/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <9> on input line 56.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 56.
+LaTeX Font Info:    Try loading font information for OML+cmr on input line 56.
+
 (/opt/texlive/2019/texmf-dist/tex/latex/base/omlcmr.fd
 File: omlcmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <9> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 42.
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 56.
+) (./BinTree.lhs
+Overfull \hbox (10.20117pt too wide) in paragraph at lines 33--34
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
 
-Overfull \hbox (21.30121pt too wide) in paragraph at lines 42--43
+
+Overfull \hbox (21.30121pt too wide) in paragraph at lines 41--42
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][] 
  []
 
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <9> on input line 48.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 48.
-[1
-
-{/opt/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+[2]
 LaTeX Font Info:    Font shape `OML/cmr/bx/n' in size <9> not available
-(Font)              Font shape `OML/cmm/b/it' tried instead on input line 59.
+(Font)              Font shape `OML/cmm/b/it' tried instead on input line 58.
 
-Overfull \hbox (99.00146pt too wide) in paragraph at lines 64--65
+Overfull \hbox (99.00146pt too wide) in paragraph at lines 63--64
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][] 
  []
 
-) [2] (./Report.aux) ) 
+) [3] (./Report.aux) ) 
 Here is how much of TeX's memory you used:
- 2453 strings out of 494053
- 31380 string characters out of 6164918
- 283581 words of memory out of 5000000
- 6199 multiletter control sequences out of 15000+600000
- 9166 words of font info for 32 fonts, out of 8000000 for 9000
+ 2485 strings out of 494053
+ 31682 string characters out of 6164918
+ 288631 words of memory out of 5000000
+ 6227 multiletter control sequences out of 15000+600000
+ 9474 words of font info for 33 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
- 29i,6n,40p,175b,1585s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 29i,6n,40p,224b,1585s stack positions out of 5000i,500n,10000p,200000b,80000s
 </opt/texlive/2019/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmbx12.pfb></opt/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmb
-x9.pfb></opt/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb><
-/opt/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib9.pfb></o
-pt/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></opt/texli
-ve/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></opt/texlive/2019/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></opt/texlive/2019/texmf-di
-st/fonts/type1/public/amsfonts/cm/cmr9.pfb></opt/texlive/2019/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmsy9.pfb>
-Output written on Report.pdf (2 pages, 96069 bytes).
+/cm/cmbx10.pfb></opt/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmb
+x12.pfb></opt/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb>
+</opt/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></opt/te
+xlive/2019/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib9.pfb></opt/texl
+ive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></opt/texlive/2019
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></opt/texlive/2019/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmr17.pfb></opt/texlive/2019/texmf-dist/font
+s/type1/public/amsfonts/cm/cmr9.pfb></opt/texlive/2019/texmf-dist/fonts/type1/p
+ublic/amsfonts/cm/cmsy9.pfb>
+Output written on Report.pdf (3 pages, 117947 bytes).
 PDF statistics:
- 47 PDF objects out of 1000 (max. 8388607)
- 33 compressed objects within 1 object stream
+ 54 PDF objects out of 1000 (max. 8388607)
+ 38 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

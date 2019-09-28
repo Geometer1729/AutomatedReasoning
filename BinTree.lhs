@@ -1,5 +1,4 @@
-\lstnewenvironment{code}{\lstset{language=Haskell,basicstyle=\small}}{}
-\subsection{Bin Tree}
+\subsection{BinTree}
 
 \begin{code}
 module BinTree where
